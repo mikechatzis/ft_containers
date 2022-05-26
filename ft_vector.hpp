@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/25 19:09:58 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/26 19:34:18 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -641,6 +641,7 @@ namespace ft
 				this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
 				this->arr_ = NULL;
 				this->size_ = 0;
+				this->capacity_ = 0;
 			}
 
 			iterator erase (iterator position){
@@ -762,12 +763,12 @@ namespace ft
 					}
 					this->Alloc_.construct(&*(position), val);
 					this->size_ += 1;
+					this->capacity_ -= 1;
 				}
 				else
 				{
 					size_t pos = 0;
 					T tmp[this->size_ + 1];
-					this->capacity_ = 0;
 					size_t j = 0;
 					for (iterator i = this->begin(); i != this->end(); i++)
 					{
@@ -781,14 +782,122 @@ namespace ft
 						}
 						j++;
 					}
+					if (position == this->end())
+					{
+						pos = j;
+						tmp[j] = val;
+					}
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
 					this->arr_ = this->Alloc_.allocate(this->size_ + 1);
 					for (size_t i = 0; i < this->size_ + 1; i++)
 						this->Alloc_.construct(&this->arr_[i], tmp[i]);
+					this->capacity_ = 0;
 					this->size_++;
 					return iterator(&this->arr_[pos]);
 				}
 				return iterator(&*(position));
+			}
+
+			void insert (iterator position, size_type n, const value_type& val){
+				if (!this->arr_)
+					this->arr_ = this->arr_ = this->Alloc_.allocate(this->size_ + n);
+				if (this->size_ + n <= this->capacity())
+				{
+					for (iterator i = this->end(); i != position; i--)
+					{
+						this->Alloc_.construct(&(*(i + n - 1)), *(i - 1));
+						this->Alloc_.destroy(&(*(i - 1)));
+					}
+					for (size_t i = 0; i < n; i++)
+						this->Alloc_.construct(&*(position + i), val);
+					this->size_ += n;
+					this->capacity_ -= n;
+				}
+				else
+				{
+					T tmp[this->size_ + n];
+					size_t j = 0;
+					for (iterator i = this->begin(); i != this->end(); i++)
+					{
+						if (i != position)
+							tmp[j] = *i;
+						else
+						{
+							for (size_t i = 0; i < n; i++)
+								tmp[j++] = val;
+							tmp[j] = *i;
+						}
+						j++;
+					}
+					if (position == this->end())
+						for (size_t i = 0; i < n; i++)
+								tmp[j++] = val;
+					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
+					this->arr_ = this->Alloc_.allocate(this->size_ + n);
+					for (size_t i = 0; i < this->size_ + n; i++)
+						this->Alloc_.construct(&this->arr_[i], tmp[i]);
+					this->capacity_ = 0;
+					this->size_ += n;
+				}
+			}
+
+			template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last){
+				size_t j = 0;
+				for (InputIterator i = first; i != last; i++)
+					j++;
+				if (!this->arr_)
+					this->arr_ = this->arr_ = this->Alloc_.allocate(this->size_ + j);
+				if (this->size_ + j <= this->capacity())
+				{
+					for (iterator i = this->end(); i != position; i--)
+					{
+						this->Alloc_.construct(&(*(i + j - 1)), *(i - 1));
+						this->Alloc_.destroy(&(*(i - 1)));
+					}
+					for (size_t i = 0; i < j; i++)
+						this->Alloc_.construct(&*(position + i), *first++);
+					this->size_ += j;
+					this->capacity_ -= j;
+				}
+				else
+				{
+					T tmp[this->size_ + j];
+					size_t k = 0;
+					for (iterator i = this->begin(); i != this->end(); i++)
+					{
+						if (i != position)
+							tmp[k] = *i;
+						else
+						{
+							for (size_t i = 0; i < j; i++)
+								tmp[k++] = *first++;
+							tmp[k] = *i;
+						}
+						k++;
+					}
+					if (position == this->end())
+						for (size_t i = 0; i < j; i++)
+								tmp[k++] = *first++;
+					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
+					this->arr_ = this->Alloc_.allocate(this->size_ + j + 1);
+					for (size_t i = 0; i < this->size_ + j; i++)
+						this->Alloc_.construct(&this->arr_[i], tmp[i]);
+					this->capacity_ = 0;
+					this->size_ += j;
+				}
+			}
+
+			void pop_back(){
+				if (!this->arr_)
+					return;
+				this->Alloc_.destroy(&(*(this->end() - 1)));
+				this->size_--;
+				this->capacity_++;
+			}
+
+			void push_back (const value_type& val){
+				this->insert(this->end(), val);
 			}
 
 		private:
