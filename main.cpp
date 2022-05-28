@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/26 19:41:23 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/27 11:37:17 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,4 +134,7 @@ int main()
 	std::cout << "pushed back '334' to v6, v6 has enough capacity: " << v6.size() << ":" << v6.capacity()<< ". Checking iterator validity: " << *d << " | "; v6.print();
 	v6.push_back(334);
 	std::cout << "pushed back '334' to v6, v6 does not have enough capacity: " << v6.size() << ":" << v6.capacity()<< ". Checking iterator validity: " << *d << " | "; v6.print();
+
+	ft::swap(v5, v6);
+	std::cout << "used non member 'swap' on v5 and v6. New v5: "  << v5.size() << ":" << v5.capacity() << " | "; v5.print(); std::cout << "New v6: "  << v6.size() << ":" << v6.capacity() << " | "; v6.print();
 }

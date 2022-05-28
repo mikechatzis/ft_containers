@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/26 19:34:18 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/27 11:33:38 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -688,7 +688,7 @@ namespace ft
 				T *tmp;
 				
 				size_t tmpsize = this->size_;
-				this->size_ = x.size();
+				this->size_ = x.size_;
 				x.size_ = tmpsize;
 				
 				size_t tmpcapacity = this->capacity_;
@@ -906,6 +906,12 @@ namespace ft
 			size_type capacity_;
 			allocator_type Alloc_;
 	};
+
+	template <typename T>
+	void swap(ft::vector<T> &x, ft::vector<T> &y)
+	{
+		x.swap(y);
+	}
 }
 
 // template< typename T, class Allocator = std::allocator<T> > vector::vector(const allocator_type &alloc)
