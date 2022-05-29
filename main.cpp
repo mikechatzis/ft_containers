@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/27 11:37:17 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/29 19:41:49 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int main()
 	
 	std::cout << v3.empty() << std::endl;
 	
-	std::vector<std::string> libv;
+	std::vector<int> libv;
 	std::cout << "max size of v3(vector<string>) = " << v3.max_size() << std::endl << "max size of v(vector<int>) = " << v.max_size() << std::endl
 		<< "max size of original vector<string> = " << libv.max_size() << std::endl;
 
@@ -52,7 +52,7 @@ int main()
 	std::cout << "the 3rd value of v3 is: " << v3[2] << "::" << v3.at(2) << std::endl;
 	std::cout << "the first value of v3 is: " << v3.front() << "\nand the last one is " << v3.back() << std::endl;
 
-	libv.resize(2, "hello");
+	libv.resize(2, 42);
 
 	ft::vector<int>::iterator b = v3.begin();
 	std::cout << "test \"begin\": ft::vector v3: " << *b << std::endl;
@@ -96,7 +96,7 @@ int main()
 	std::cout << "v5 reassigned from range to bigger size. New v5 size: " << v5.size() << ":" << v5.capacity() << " | "; v5.print();
 
 
-	e = v5.insert(v5.begin() + 12, 128);
+	 e= v5.insert(v5.begin() + 12, 128);
 	std::cout << "inserted new value '128' to v5. v5 not enough capacity. New v5 size: " << v5.size() << ":" << v5.capacity() << ", insert iterator points to: " << *e << " | "; v5.print();
 	v5 = v3;
 	v5.reserve(10);
