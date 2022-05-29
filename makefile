@@ -6,7 +6,7 @@
 #    By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/21 14:41:30 by mchatzip          #+#    #+#              #
-#    Updated: 2022/05/28 16:08:56 by mchatzip         ###   ########.fr        #
+#    Updated: 2022/05/29 11:08:37 by mchatzip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,4 +42,6 @@ fclean:		clean
 
 re:		fclean all
 
-.PHONY: all clean fclean re
+re_map: fclean map
+
+.PHONY: all clean fclean re re_map
