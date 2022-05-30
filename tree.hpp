@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/29 19:22:14 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:08:26 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,65 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
+#include "ft_vector.hpp"
+
+
 
 namespace ft
 {
+	template <typename T> class map_iterator
+	{
+		public:
+			typedef T value_type;
+			typedef std::ptrdiff_t difference_type;
+			typedef T *pointer;
+			typedef T &reference;
+			typedef ft::bidirectional_iterator_tag iterator_category;
+			
+			map_iterator() : p(NULL), current_node(NULL) {}
+			map_iterator(T *ptr) : p(ptr), current_node(p->get_root()) {}
+			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node) {}
+			~map_iterator(){};
+			
+			map_iterator &operator=(const map_iterator &other){
+				p = other.p;
+				current_node = other.current_node;
+				return *this;
+			}
+			reference operator*(void) const{
+				return *p;
+			}
+			pointer operator->(void) const{
+				return p;
+			}
+			map_iterator &operator++(){
+				current_node = p->next(current_node);
+				return this;
+			}
+			map_iterator &operator--(){
+				current_node = p->prev(current_node);
+				return this;
+			}
+			map_iterator operator++(int dummy){
+				(void)dummy;
+				map_iterator<T> copy = *this;
+				current_node = p->next(current_node);
+				return copy;
+			}
+			map_iterator operator--(int dummy){
+				(void)dummy;
+				map_iterator<T> copy = *this;
+				current_node = p->prev(current_node);
+				return copy;
+			}
+
+			// bool operator==(const map_iterator &rhs) const;
+			// bool operator!=(const map_iterator &rhs) const;
+
+			T *p;
+			typename T::NODE current_node;
+	};
+	
 	template<typename T1, typename T2> class pair
 	{
 		public:
@@ -94,7 +150,7 @@ namespace ft
 
 			typedef std::allocator<ft::pair<const Key, T> > allocator_type;
 			typedef T value_type;
-
+			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
 			tree(const allocator_type &alloc = allocator_type()) : _node_count(0), _root(NULL) {
@@ -107,7 +163,7 @@ namespace ft
 				_Alloc.construct(&(_root->pair), ft::pair<Key, T>(k, val));
 				_root->left = NULL;
 				_root->right = NULL;
-				_acc = _arr_Alloc.allocate(_node_count * sizeof(node<Key, T> *));
+				_acc = _arr_Alloc.allocate(_node_count * sizeof(NODE));
 				_acc[0] = _root;
 			}
 			~tree(){
@@ -120,14 +176,18 @@ namespace ft
 				_arr_Alloc.deallocate(_acc, _node_count);
 			};
 			////
+			
+			NODE get_root(){
+				return _root;
+			}
 
 			template<class InputIt> void insert(InputIt map_elem){
-				node<Key, T> *tmp[_node_count + 1];
+				NODE tmp[_node_count + 1];
 				for (size_t i = 0; i < _node_count; i++)
 					tmp[i] = _acc[i];
 					
 				_arr_Alloc.deallocate(_acc, _node_count);
-				_acc = _arr_Alloc.allocate((_node_count + 1) * sizeof(node<Key, T> *));
+				_acc = _arr_Alloc.allocate((_node_count + 1) * sizeof(NODE));
 				for (size_t i = 0; i < _node_count; i++)
 					_acc[i] = tmp[i];
 				
@@ -141,7 +201,7 @@ namespace ft
 				}
 				else
 				{
-					node<Key, T> *temp = _root;
+					NODE temp = _root;
 					while (temp)
 					{
 						if (map_elem->first < temp->pair.first)
@@ -185,8 +245,8 @@ namespace ft
 				this->_node_count++;
 			}
 
-			node<Key, T> *search(const Key &key){
-				node<Key, T> *temp = _root;
+			NODE search(const Key &key){
+				NODE temp = _root;
 				while (temp)
 				{
 					if (key < temp->pair.first)
@@ -208,10 +268,35 @@ namespace ft
 				}
 				return NULL; 
 			}
+
+			NODE next(const NODE n){
+				NODE temp = _root;
+				while (temp)
+				{
+					if (temp->pair.first <= n->pair.first)
+							temp = temp->right;
+					else
+						return temp;
+				}
+				return temp;
+			}
+
+			NODE prev(const NODE n){
+				NODE temp = _root;
+				while (temp)
+				{
+					if (temp->pair.first >= n->pair.first)
+							temp = temp->left;
+					else
+						return temp;
+				}
+				return temp;
+			}
+			
 		private:
 			size_t _node_count;
-			node<Key, T> *_root;
-			node<Key, T> **_acc;
+			NODE _root;
+			NODE *_acc;
 			std::allocator<node<Key, T>*> _arr_Alloc;
 			allocator_type _Alloc;
 	};

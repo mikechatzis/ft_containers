@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/29 19:36:46 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/30 20:11:08 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,14 @@ int main()
 	m[3] = "three";
 	m[4] = "one";
 
-	std::cout << m[5] << std::endl;
-	std::cout << m[5] << std::endl;
-
 	std::map<int, std::string>::iterator it = m.begin();
-	// std::cout << it->first << " " << it->second << std::endl;
-	tr.insert(it);
+	tr.insert(++it);
+	tr.insert(--it);
+	std::cout << tr.next(tr.search(1))->pair.second << std::endl;
+	std::cout << tr.prev(tr.search(2))->pair.second << std::endl;
+
+	ft::map_iterator<ft::tree<int, std::string> > n_it(&tr);
+	std::cout << "map_iterator testing " << n_it++.current_node->pair.second << " | " << n_it++.current_node->pair.second << n_it++.current_node->pair.second << std::endl;
 
 	node<int, std::string> *s = tr.search(2);
 	std::cout << "node search ptr value: " << s << std::endl;
