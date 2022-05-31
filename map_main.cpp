@@ -6,50 +6,82 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/30 20:11:08 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/31 20:04:19 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tree.hpp"
 #include <array>
-#include <map>
+
+
+template<typename Key, typename T> struct nod{
+	ft::pair<Key, T> pair;
+	nod *left;
+	nod *right;
+};
+
+template<class InputIt> void insert(nod<int,std::string> *&n, InputIt map_elem){
+	if (!n)
+	{
+		n = new nod<int,std::string>;
+		n->pair.first = map_elem->first;
+		n->pair.second = map_elem->second;
+		n->right = n->left = NULL;
+		std::cout << "creation "<< n->pair.first << std::endl;
+	}
+	else if (map_elem->first > n->pair.first)
+	{
+		std::cout << "jump right" << std::endl;
+		insert(n->right, map_elem);	
+	}
+	else if (map_elem->first < n->pair.first)
+	{
+		std::cout << "jump left" << std::endl;
+		insert(n->left, map_elem);	
+	}
+}
 
 int main()
 {
-	ft::tree<int,std::string> tr(1, "hi");
-	std::map<int, std::string> m;
-	m[2] = "two";
-	m[3] = "three";
-	m[4] = "one";
 
-	std::map<int, std::string>::iterator it = m.begin();
-	tr.insert(++it);
-	tr.insert(--it);
-	std::cout << tr.next(tr.search(1))->pair.second << std::endl;
-	std::cout << tr.prev(tr.search(2))->pair.second << std::endl;
-
-	ft::map_iterator<ft::tree<int, std::string> > n_it(&tr);
-	std::cout << "map_iterator testing " << n_it++.current_node->pair.second << " | " << n_it++.current_node->pair.second << n_it++.current_node->pair.second << std::endl;
-
-	node<int, std::string> *s = tr.search(2);
-	std::cout << "node search ptr value: " << s << std::endl;
-
-	ft::pair<std::string, int> p("hello", 42); p.print();
-	ft::pair<std::string, int> pr("world", 42);
-	ft::pair<std::string, float> p2(p); p2.print();
-	ft::pair<std::string, int> p3 = p; p3.print();
-	if (p == p3)
-		std::cout << "'==' comparison success\n";
-	if (!(p != p3))
-		std::cout << "'!=' comparison success\n";
-	if (p < pr)
-		std::cout << "'<' comparison success\n";
-	if (!(p > pr))
-		std::cout << "'>' comparison success\n";
-	if (p <= pr && p <= p3)
-		std::cout << "'<=' comparison success\n";
-	if (!(p >= pr && p >= p3))
-		std::cout << "'>=' comparison success\n";
-	p3 = ft::make_pair("three", 3); p3.print();
+	// ft::tree<int,std::string> tr(1, "hello");
+	ft::tree<int,std::string> tr2;
 	
+	tr2.testf();
+
+	// std::cout << tr2.search(&tr2.get_root(), 3)->pair.first << std::endl;
+	// std::cout << tr.next(tr.search(temp, 3))->pair.second << std::endl;
+	// std::cout << tr.prev(tr.search(3))->pair.second << std::endl;
+
+	// ft::map_iterator<ft::tree<int, std::string> > n_it(&tr);
+	// std::cout << "map_iterator testing " << n_it++.current_node->pair.second <<  std::endl;
+
+	// node<int, std::string> *s = tr.search(2);
+	// std::cout << "node search ptr value: " << s << std::endl;
+
+	// ft::pair<std::string, int> p("hello", 42); p.print();
+	// ft::pair<std::string, int> pr("world", 42);
+	// ft::pair<std::string, float> p2(p); p2.print();
+	// ft::pair<std::string, int> p3 = p; p3.print();
+	// if (p == p3)
+	// 	std::cout << "'==' comparison success\n";
+	// if (!(p != p3))
+	// 	std::cout << "'!=' comparison success\n";
+	// if (p < pr)
+	// 	std::cout << "'<' comparison success\n";
+	// if (!(p > pr))
+	// 	std::cout << "'>' comparison success\n";
+	// if (p <= pr && p <= p3)
+	// 	std::cout << "'<=' comparison success\n";
+	// if (!(p >= pr && p >= p3))
+	// 	std::cout << "'>=' comparison success\n";
+	// p3 = ft::make_pair("three", 3); p3.print();
+	
+	// nod<int, std::string> *l = new nod<int,std::string>;
+	// l->pair.first = 1;
+	// l->pair.second = "one";
+
+	// insert(l, it);
+
+	// std::cout << l->right->pair.second << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/30 20:08:26 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/05/31 20:16:53 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #include <math.h>
 #include <unistd.h>
 #include "ft_vector.hpp"
+#include <map>
 
 
 
@@ -167,129 +168,93 @@ namespace ft
 				_acc[0] = _root;
 			}
 			~tree(){
-				
-				for (size_t i = 0; i < _node_count; i++)
-				{
-					_Alloc.destroy(&(_acc[i]->pair));
-					delete _acc[i];
-				}
-				_arr_Alloc.deallocate(_acc, _node_count);
+
 			};
 			////
 			
-			NODE get_root(){
-				return _root;
+			node<Key, T> &get_root(){
+				return *this->_root;
 			}
 
-			template<class InputIt> void insert(InputIt map_elem){
-				NODE tmp[_node_count + 1];
-				for (size_t i = 0; i < _node_count; i++)
-					tmp[i] = _acc[i];
-					
-				_arr_Alloc.deallocate(_acc, _node_count);
-				_acc = _arr_Alloc.allocate((_node_count + 1) * sizeof(NODE));
-				for (size_t i = 0; i < _node_count; i++)
-					_acc[i] = tmp[i];
-				
-				if (!_root)
+			template<class InputIt> void insert(node<Key, T> *&n, InputIt map_elem){
+				std::allocator<node<Key, T> > tmp_all;
+				if (!n)
 				{
-					_root = new node<Key, T>;
-					_Alloc.construct(&(_root->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
-					_root->left = NULL;
-					_root->right = NULL;
-					_acc[0] = _root;
+					n = tmp_all.allocate(1);
+					_Alloc.construct(&(n->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
+					n->right = n->left = NULL;
+					std::cout << "creation "<< n->pair.first << std::endl;
+					this->_node_count += 1;
 				}
+				else if (map_elem->first > n->pair.first)
+				{
+					std::cout << "jump right" << std::endl;
+					insert(n->right, map_elem);	
+				}
+				else if (map_elem->first < n->pair.first)
+				{
+					std::cout << "jump left" << std::endl;
+					insert(n->left, map_elem);	
+				}
+			}
+
+			void testf(){
+				std::map<int, std::string> m;
+				m[2] = "two";
+				m[3] = "three";
+				m[4] = "one";
+
+				std::map<int, std::string>::iterator it = m.begin();
+				insert(_root, it);
+				insert(_root, ++it);
+				std::cout << search(_root, 3)->pair.second << std::endl;
+			}
+
+			NODE search(NODE n, const Key &key){
+				if (!n || n->pair.first == key)
+					return n;
+				else if (n->pair.first < key)
+					n = search(n->right, key);
 				else
-				{
-					NODE temp = _root;
-					while (temp)
-					{
-						if (map_elem->first < temp->pair.first)
-						{
-							if (temp->left)
-								temp = temp->left;
-							else
-								break;
-						}
-						else if (map_elem->first > temp->pair.first)
-						{
-							if (temp->right)
-								temp = temp->right;
-							else
-								break;
-						}
-						else
-						{
-							temp->pair.second = map_elem->second;
-							return;
-						}
-					}
-					
-					if (map_elem->first < temp->pair.first)
-					{
-						temp->left = new node<Key, T>;
-						_Alloc.construct(&(temp->left->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
-						temp->left->left = NULL;
-						temp->left->right = NULL;
-						_acc[_node_count] = temp->left;
-					}
-					else
-					{
-						temp->right = new node<Key, T>;
-						_Alloc.construct(&(temp->right->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
-						temp->right->left = NULL;
-						temp->right->right = NULL;
-						_acc[_node_count] = temp->right;
-					}
-				}
-				this->_node_count++;
-			}
-
-			NODE search(const Key &key){
-				NODE temp = _root;
-				while (temp)
-				{
-					if (key < temp->pair.first)
-					{
-						if (temp->left)
-							temp = temp->left;
-						else
-							break;
-					}
-					else if (key > temp->pair.first)
-					{
-						if (temp->right)
-							temp = temp->right;
-						else
-							break;
-					}
-					else
-						return temp;
-				}
-				return NULL; 
+					n = search(n->left, key);
+				return n;
 			}
 
 			NODE next(const NODE n){
 				NODE temp = _root;
-				while (temp)
+				if (temp->pair.first == n->pair.first)
 				{
-					if (temp->pair.first <= n->pair.first)
-							temp = temp->right;
-					else
-						return temp;
-				}
+					if (temp->right)
+					{
+						temp = temp->right;
+						while (temp->left)
+							temp = temp->left;
+					}
+					return temp;
+				}	
+				if (temp->pair.first > n->pair.first)
+					temp = next(temp->left);
+				else
+					temp = next(temp->right);
 				return temp;
 			}
 
 			NODE prev(const NODE n){
 				NODE temp = _root;
-				while (temp)
+				if (temp->pair.first == n->pair.first)
 				{
-					if (temp->pair.first >= n->pair.first)
-							temp = temp->left;
-					else
-						return temp;
-				}
+					if (temp->left)
+					{
+						temp = temp->left;
+						while (temp->right)
+							temp = temp->right;
+					}
+					return temp;
+				}	
+				if (temp->pair.first > n->pair.first)
+					temp = prev(temp->left);
+				else
+					temp = prev(temp->right);
 				return temp;
 			}
 			
