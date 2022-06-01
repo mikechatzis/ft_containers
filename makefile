@@ -6,7 +6,7 @@
 #    By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/21 14:41:30 by mchatzip          #+#    #+#              #
-#    Updated: 2022/05/29 11:08:37 by mchatzip         ###   ########.fr        #
+#    Updated: 2022/06/01 19:54:34 by mchatzip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ $(NAME):	$(OBJ)
 
 clean:		
 			$(RM) *.o
-			$(RM) -r containers.dSYM
+			$(RM) -r containers.dSYM map.dSYM
 
 fclean:		clean
 			$(RM) $(NAME); $(RM) map

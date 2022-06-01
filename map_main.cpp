@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/31 20:04:19 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/01 19:53:36 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,32 @@
 #include <array>
 
 
-template<typename Key, typename T> struct nod{
-	ft::pair<Key, T> pair;
-	nod *left;
-	nod *right;
-};
+// template<typename Key, typename T> struct nod{
+// 	ft::pair<Key, T> pair;
+// 	nod *left;
+// 	nod *right;
+// };
 
-template<class InputIt> void insert(nod<int,std::string> *&n, InputIt map_elem){
-	if (!n)
-	{
-		n = new nod<int,std::string>;
-		n->pair.first = map_elem->first;
-		n->pair.second = map_elem->second;
-		n->right = n->left = NULL;
-		std::cout << "creation "<< n->pair.first << std::endl;
-	}
-	else if (map_elem->first > n->pair.first)
-	{
-		std::cout << "jump right" << std::endl;
-		insert(n->right, map_elem);	
-	}
-	else if (map_elem->first < n->pair.first)
-	{
-		std::cout << "jump left" << std::endl;
-		insert(n->left, map_elem);	
-	}
-}
+// template<class InputIt> void insert(nod<int,std::string> *&n, InputIt map_elem){
+// 	if (!n)
+// 	{
+// 		n = new nod<int,std::string>;
+// 		n->pair.first = map_elem->first;
+// 		n->pair.second = map_elem->second;
+// 		n->right = n->left = NULL;
+// 		std::cout << "creation "<< n->pair.first << std::endl;
+// 	}
+// 	else if (map_elem->first > n->pair.first)
+// 	{
+// 		std::cout << "jump right" << std::endl;
+// 		insert(n->right, map_elem);	
+// 	}
+// 	else if (map_elem->first < n->pair.first)
+// 	{
+// 		std::cout << "jump left" << std::endl;
+// 		insert(n->left, map_elem);	
+// 	}
+// }
 
 int main()
 {
@@ -49,12 +49,14 @@ int main()
 	
 	tr2.testf();
 
+	// std::cout << "testing function 'next': " << tr2.next(&tr2.get_root())->pair.second << tr2.next(&tr2.get_root())->pair.second << std::endl;
 	// std::cout << tr2.search(&tr2.get_root(), 3)->pair.first << std::endl;
 	// std::cout << tr.next(tr.search(temp, 3))->pair.second << std::endl;
 	// std::cout << tr.prev(tr.search(3))->pair.second << std::endl;
 
-	// ft::map_iterator<ft::tree<int, std::string> > n_it(&tr);
-	// std::cout << "map_iterator testing " << n_it++.current_node->pair.second <<  std::endl;
+	ft::map_iterator<ft::tree<int, std::string> > n_it(&tr2);
+	std::cout << "map_iterator testing " << n_it++.current_node->pair.second << n_it++.current_node->pair.second
+	 << n_it--.current_node->pair.second << n_it.current_node->pair.second <<  std::endl;
 
 	// node<int, std::string> *s = tr.search(2);
 	// std::cout << "node search ptr value: " << s << std::endl;

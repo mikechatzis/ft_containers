@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/31 20:16:53 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/01 19:52:56 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft
 			typedef ft::bidirectional_iterator_tag iterator_category;
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
-			map_iterator(T *ptr) : p(ptr), current_node(p->get_root()) {}
+			map_iterator(T *ptr) : p(ptr), current_node(&p->get_root()) {}
 			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node) {}
 			~map_iterator(){};
 			
@@ -57,23 +57,35 @@ namespace ft
 				return p;
 			}
 			map_iterator &operator++(){
-				current_node = p->next(current_node);
-				return this;
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
+				return *this;
 			}
 			map_iterator &operator--(){
-				current_node = p->prev(current_node);
-				return this;
+				typename T::NODE root = &p->get_root();
+				typename T::NODE pre = NULL;
+				p->prev(root, pre, current_node);
+				current_node = pre;
+				return *this;
 			}
 			map_iterator operator++(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
-				current_node = p->next(current_node);
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
 				return copy;
 			}
 			map_iterator operator--(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
-				current_node = p->prev(current_node);
+				typename T::NODE root = &p->get_root();
+				typename T::NODE pre = NULL;
+				p->prev(root, pre, current_node);
+				current_node = pre;
 				return copy;
 			}
 
@@ -202,10 +214,11 @@ namespace ft
 				std::map<int, std::string> m;
 				m[2] = "two";
 				m[3] = "three";
-				m[4] = "one";
+				m[4] = "four";
 
 				std::map<int, std::string>::iterator it = m.begin();
 				insert(_root, it);
+				insert(_root, ++it);
 				insert(_root, ++it);
 				std::cout << search(_root, 3)->pair.second << std::endl;
 			}
@@ -220,42 +233,51 @@ namespace ft
 				return n;
 			}
 
-			NODE next(const NODE n){
-				NODE temp = _root;
-				if (temp->pair.first == n->pair.first)
+			void next(node<Key, T> *&root, node<Key, T> *&suc, const NODE n){
+				if (!root)
+					return;
+				if (root->pair.first == n->pair.first)
 				{
-					if (temp->right)
+					
+					if (root->right)
 					{
-						temp = temp->right;
-						while (temp->left)
-							temp = temp->left;
+						NODE tmp = root->right;
+						while (tmp->left)
+							tmp = tmp->left;
+						suc = tmp;
 					}
-					return temp;
+					return;
 				}	
-				if (temp->pair.first > n->pair.first)
-					temp = next(temp->left);
+				if (root->pair.first > n->pair.first)
+				{
+					suc = root;
+					next(root->left, suc, n);	
+				}
 				else
-					temp = next(temp->right);
-				return temp;
+					next(root->right, suc, n);
 			}
 
-			NODE prev(const NODE n){
-				NODE temp = _root;
-				if (temp->pair.first == n->pair.first)
+			void prev(node<Key, T> *&root, node<Key, T> *&pre, const NODE n){
+				if (!root)
+					return;
+				if (root->pair.first == n->pair.first)
 				{
-					if (temp->left)
+					if (root->left)
 					{
-						temp = temp->left;
-						while (temp->right)
-							temp = temp->right;
+						NODE tmp = root->left;
+						while (tmp->right)
+							tmp = tmp->right;
+						pre = tmp;
 					}
-					return temp;
+					return;
 				}	
-				if (temp->pair.first > n->pair.first)
-					temp = prev(temp->left);
+				if (root->pair.first > n->pair.first)
+					prev(root->left, pre, n);
 				else
-					temp = prev(temp->right);
-				return temp;
+				{
+					pre = root;
+					prev(root->right, pre, n);	
+				}
 			}
 			
 		private:
