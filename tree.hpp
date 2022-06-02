@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/01 19:52:56 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/02 15:57:14 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,24 @@ namespace ft
 				return copy;
 			}
 
-			// bool operator==(const map_iterator &rhs) const;
-			// bool operator!=(const map_iterator &rhs) const;
+			bool operator==(const map_iterator &rhs) const{
+				return this->current_node == rhs.current_node;
+			}
+			bool operator!=(const map_iterator &rhs) const{
+				return this->current_node != rhs.current_node;
+			}
+			bool operator<(const map_iterator &rhs) const{
+				return this->current_node < rhs.current_node;
+			}
+			bool operator>(const map_iterator &rhs) const{
+				return this->current_node > rhs.current_node;
+			}
+			bool operator>=(const map_iterator &rhs) const{
+				return this->current_node >= rhs.current_node;
+			}
+			bool operator<=(const map_iterator &rhs) const{
+				return this->current_node <= rhs.current_node;
+			}
 
 			T *p;
 			typename T::NODE current_node;
@@ -221,6 +237,7 @@ namespace ft
 				insert(_root, ++it);
 				insert(_root, ++it);
 				std::cout << search(_root, 3)->pair.second << std::endl;
+
 			}
 
 			NODE search(NODE n, const Key &key){
