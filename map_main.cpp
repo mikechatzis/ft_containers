@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/03 20:17:36 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/03 21:58:48 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,10 @@ int main()
 	ft::map_iterator<ft::tree<int, std::string> > n_it3(&tr2);
 	ft::map_iterator<ft::tree<int, std::string> > n_it4(&tr2);
 	std::cout << "testing 'last': " << "last value: " << tr2.last()->pair.second << std::endl;
-	std::cout << "map_iterator increment/decrement testing: " << (++n_it).current_node->pair.second << (++n_it).current_node->pair.second;
-	n_it++; n_it--;
-	std::cout << ((--n_it)).current_node->pair.second << (--n_it).current_node->pair.second  <<  std::endl;
+	std::cout << "map_iterator increment/decrement testing: " << (n_it).second << (++n_it).second;
+	n_it++; n_it++;
+	std::cout << ((--n_it)).second << (--n_it).second  <<  std::endl;
+	--n_it;
 
 	if (n_it2 == n_it)
 		std::cout << "operator '==' test succesful\n";

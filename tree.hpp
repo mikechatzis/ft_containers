@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/03 20:20:54 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/03 21:57:05 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ namespace ft
 {
 	template <typename T> class map_iterator
 	{
+		private:
+			T *p;
+			typename T::NODE current_node;
+			
 		public:
 			typedef T value_type;
 			typedef std::ptrdiff_t difference_type;
@@ -41,13 +45,15 @@ namespace ft
 			typedef ft::bidirectional_iterator_tag iterator_category;
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
-			map_iterator(T *ptr) : p(ptr), current_node(&p->get_root()) {}
-			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node) {}
+			map_iterator(T *ptr) : p(ptr), current_node(&p->get_root()), first(current_node->pair.first), second(current_node->pair.second) {}
+			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
 			~map_iterator(){};
 			
 			map_iterator &operator=(const map_iterator &other){
 				p = other.p;
 				current_node = other.current_node;
+				first = other.first;
+				second = other.second;
 				return *this;
 			}
 			reference operator*(void) const{
@@ -61,16 +67,30 @@ namespace ft
 				typename T::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
+				if (current_node)
+				{
+					first = current_node->pair.first;
+					second = current_node->pair.second;
+				}
 				return *this;
 			}
 			map_iterator &operator--(){
 				if (!this->current_node)
+				{
 					current_node = p->last();
+					first = current_node->pair.first;
+					second = current_node->pair.second;
+				}
 				else
 				{	typename T::NODE root = &p->get_root();
 					typename T::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
+					if (current_node)
+					{
+						first = current_node->pair.first;
+						second = current_node->pair.second;
+					}
 				}
 				return *this;
 			}
@@ -81,18 +101,32 @@ namespace ft
 				typename T::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
+				if (current_node)
+				{
+					first = current_node->pair.first;
+					second = current_node->pair.second;
+				}
 				return copy;
 			}
 			map_iterator operator--(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
 				if (!this->current_node)
+				{
 					current_node = p->last();
+					first = current_node->pair.first;
+					second = current_node->pair.second;
+				}
 				else
 				{	typename T::NODE root = &p->get_root();
 					typename T::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
+					if (current_node)
+					{
+						first = current_node->pair.first;
+						second = current_node->pair.second;
+					}
 				}
 				return copy;
 			}
@@ -115,9 +149,9 @@ namespace ft
 			bool operator<=(const map_iterator &rhs) const{
 				return this->current_node <= rhs.current_node;
 			}
-
-			T *p;
-			typename T::NODE current_node;
+			
+			typename T::key_type first;
+			typename T::value_type second;
 	};
 	
 	template<typename T1, typename T2> class pair
@@ -187,6 +221,7 @@ namespace ft
 
 			typedef std::allocator<ft::pair<const Key, T> > allocator_type;
 			typedef T value_type;
+			typedef Key key_type;
 			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
@@ -224,13 +259,13 @@ namespace ft
 				}
 				else if (map_elem->first > n->pair.first)
 				{
-					std::cout << "jump right" << std::endl;
+					// std::cout << "jump right" << std::endl;
 					insert(n->right, map_elem);	
 				}
 				else if (map_elem->first < n->pair.first)
 				{
-					std::cout << "jump left" << std::endl;
-					insert(n->left, map_elem);	
+					// std::cout << "jump left" << std::endl;
+					insert(n->left, map_elem);
 				}
 			}
 
