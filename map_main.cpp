@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/02 16:40:47 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/03 20:17:36 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,10 @@ int main()
 
 	ft::map_iterator<ft::tree<int, std::string> > n_it3(&tr2);
 	ft::map_iterator<ft::tree<int, std::string> > n_it4(&tr2);
-	std::cout << "map_iterator increment/decrement testing: " << (++n_it).current_node->pair.second << (++n_it).current_node->pair.second
-	<< ((--n_it)).current_node->pair.second << (--n_it).current_node->pair.second  <<  std::endl;
+	std::cout << "testing 'last': " << "last value: " << tr2.last()->pair.second << std::endl;
+	std::cout << "map_iterator increment/decrement testing: " << (++n_it).current_node->pair.second << (++n_it).current_node->pair.second;
+	n_it++; n_it--;
+	std::cout << ((--n_it)).current_node->pair.second << (--n_it).current_node->pair.second  <<  std::endl;
 
 	if (n_it2 == n_it)
 		std::cout << "operator '==' test succesful\n";
@@ -72,6 +74,7 @@ int main()
 		std::cout << "operator '>' test succesful\n";
 	if (n_it2 >= n_it && n_it3 >= n_it4)
 		std::cout << "operator '>=' test succesful\n";
+
 
 	// node<int, std::string> *s = tr2.search(&tr2.get_root(), 2);
 	// std::cout << "node search ptr value: " << s << std::endl;

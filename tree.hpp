@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/02 15:57:14 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/03 20:20:54 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,14 @@ namespace ft
 				return *this;
 			}
 			map_iterator &operator--(){
-				typename T::NODE root = &p->get_root();
-				typename T::NODE pre = NULL;
-				p->prev(root, pre, current_node);
-				current_node = pre;
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
 				return *this;
 			}
 			map_iterator operator++(int dummy){
@@ -82,10 +86,14 @@ namespace ft
 			map_iterator operator--(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
-				typename T::NODE root = &p->get_root();
-				typename T::NODE pre = NULL;
-				p->prev(root, pre, current_node);
-				current_node = pre;
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
 				return copy;
 			}
 
@@ -186,14 +194,13 @@ namespace ft
 				_Alloc = allocator_type(alloc);
 			}
 			tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
+				std::allocator<node<Key, T> > tmp_all;
 				_Alloc = allocator_type(alloc);
-				_arr_Alloc = std::allocator<node<Key, T>*>();
-				_root = new node<Key, T>;
+				_root = tmp_all.allocate(1);
+				tmp_all.construct(_root, node<Key, T>());
 				_Alloc.construct(&(_root->pair), ft::pair<Key, T>(k, val));
 				_root->left = NULL;
 				_root->right = NULL;
-				_acc = _arr_Alloc.allocate(_node_count * sizeof(NODE));
-				_acc[0] = _root;
 			}
 			~tree(){
 
@@ -209,6 +216,7 @@ namespace ft
 				if (!n)
 				{
 					n = tmp_all.allocate(1);
+					tmp_all.construct(n, node<Key, T>());
 					_Alloc.construct(&(n->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
 					n->right = n->left = NULL;
 					std::cout << "creation "<< n->pair.first << std::endl;
@@ -296,12 +304,17 @@ namespace ft
 					prev(root->right, pre, n);	
 				}
 			}
+
+			NODE last(){
+				NODE n = _root;
+				while (n->right)
+					n = n->right;
+				return n;
+			}
 			
 		private:
 			size_t _node_count;
 			NODE _root;
-			NODE *_acc;
-			std::allocator<node<Key, T>*> _arr_Alloc;
 			allocator_type _Alloc;
 	};
 }
