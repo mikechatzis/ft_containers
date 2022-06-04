@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/03 21:57:05 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/04 16:24:57 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,18 @@ namespace ft
 	template <typename T> class map_iterator
 	{
 		private:
-			T *p;
-			typename T::NODE current_node;
+			typename T::value_type *p;
+			typename T::value_type::NODE current_node;
 			
 		public:
-			typedef T value_type;
+			typedef typename T::value_type value_type;
 			typedef std::ptrdiff_t difference_type;
 			typedef T *pointer;
 			typedef T &reference;
 			typedef ft::bidirectional_iterator_tag iterator_category;
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
-			map_iterator(T *ptr) : p(ptr), current_node(&p->get_root()), first(current_node->pair.first), second(current_node->pair.second) {}
+			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
 			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
 			~map_iterator(){};
 			
@@ -63,8 +63,8 @@ namespace ft
 				return p;
 			}
 			map_iterator &operator++(){
-				typename T::NODE root = &p->get_root();
-				typename T::NODE suc = NULL;
+				typename T::value_type::NODE root = &p->get_root();
+				typename T::value_type::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
 				if (current_node)
@@ -82,8 +82,8 @@ namespace ft
 					second = current_node->pair.second;
 				}
 				else
-				{	typename T::NODE root = &p->get_root();
-					typename T::NODE pre = NULL;
+				{	typename T::value_type::NODE root = &p->get_root();
+					typename T::value_type::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
 					if (current_node)
@@ -97,8 +97,8 @@ namespace ft
 			map_iterator operator++(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
-				typename T::NODE root = &p->get_root();
-				typename T::NODE suc = NULL;
+				typename T::value_type::NODE root = &p->get_root();
+				typename T::value_type::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
 				if (current_node)
@@ -118,8 +118,8 @@ namespace ft
 					second = current_node->pair.second;
 				}
 				else
-				{	typename T::NODE root = &p->get_root();
-					typename T::NODE pre = NULL;
+				{	typename T::value_type::NODE root = &p->get_root();
+					typename T::value_type::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
 					if (current_node)
@@ -149,9 +149,13 @@ namespace ft
 			bool operator<=(const map_iterator &rhs) const{
 				return this->current_node <= rhs.current_node;
 			}
+
+			map_iterator<T> *operator->(){
+				return this;
+			}
 			
-			typename T::key_type first;
-			typename T::value_type second;
+			typename value_type::key_type first;
+			typename value_type::value_type second;
 	};
 	
 	template<typename T1, typename T2> class pair
@@ -225,7 +229,7 @@ namespace ft
 			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
-			tree(const allocator_type &alloc = allocator_type()) : _node_count(0), _root(NULL) {
+			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0) {
 				_Alloc = allocator_type(alloc);
 			}
 			tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
@@ -238,7 +242,20 @@ namespace ft
 				_root->right = NULL;
 			}
 			~tree(){
-
+				std::allocator<node<Key, T> > tmp_all;
+				
+				NODE cur;
+				next(_root, cur, _root);
+				NODE suc = NULL;
+				while(cur)
+				{
+					std::cout << cur << " " << suc << " " << std::endl;
+					next(_root, suc, cur);
+					_Alloc.destroy(&cur->pair);
+					tmp_all.deallocate(cur, 1);
+					cur = suc;
+				}
+				// next(_root, suc, last());
 			};
 			////
 			
@@ -254,7 +271,7 @@ namespace ft
 					tmp_all.construct(n, node<Key, T>());
 					_Alloc.construct(&(n->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
 					n->right = n->left = NULL;
-					std::cout << "creation "<< n->pair.first << std::endl;
+					// std::cout << "creation "<< n->pair.first << std::endl;
 					this->_node_count += 1;
 				}
 				else if (map_elem->first > n->pair.first)
@@ -311,7 +328,7 @@ namespace ft
 				if (root->pair.first > n->pair.first)
 				{
 					suc = root;
-					next(root->left, suc, n);	
+					next(root->left, suc, n);
 				}
 				else
 					next(root->right, suc, n);
@@ -347,11 +364,61 @@ namespace ft
 				return n;
 			}
 			
+			NODE _root;
 		private:
 			size_t _node_count;
-			NODE _root;
 			allocator_type _Alloc;
 	};
+
+
+//////MAP///////
+template<
+    class Key,
+    class T,
+    class Compare = std::less<Key>,
+    class Allocator = std::allocator<ft::pair<const Key, T> > >
+	class map{
+		
+		public:
+			typedef Key key_type;
+			typedef T mapped_type;
+			typedef ft::tree<Key, T> value_type;
+			typedef size_t size_type;
+			typedef std::ptrdiff_t difference_type;
+			typedef Compare key_compare;
+			typedef Allocator allocator_type;
+			typedef value_type& reference;
+			typedef const value_type& const_reference;
+			typedef typename Allocator::pointer pointer;
+			typedef typename Allocator::const_pointer const_pointer;
+			typedef ft::map_iterator<map> iterator;
+			typedef const ft::map_iterator<map> const_iterator;
+
+			map() : _tree(value_type()){};
+			template< class InputIt > map(InputIt first, InputIt last)
+			: _tree(value_type()) {
+				while (first != last)
+				{
+					_tree.insert(_tree._root, first);
+					first++;
+				}
+			}
+
+
+			value_type &get_tree(){
+				return _tree;
+			}
+
+			//////ITERATORS////
+			iterator begin(){
+				return iterator(this);
+			}
+			iterator end(){
+				return iterator();
+			}
+		private:
+			value_type _tree;
+};
 }
 
 #endif
