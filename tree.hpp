@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/04 16:24:57 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/05 19:41:27 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,25 +242,17 @@ namespace ft
 				_root->right = NULL;
 			}
 			~tree(){
-				std::allocator<node<Key, T> > tmp_all;
-				
-				NODE cur;
-				next(_root, cur, _root);
-				NODE suc = NULL;
-				while(cur)
-				{
-					std::cout << cur << " " << suc << " " << std::endl;
-					next(_root, suc, cur);
-					_Alloc.destroy(&cur->pair);
-					tmp_all.deallocate(cur, 1);
-					cur = suc;
-				}
-				// next(_root, suc, last());
+				while(_root)
+					_root = delete_node(_root, _root->pair.first);
 			};
 			////
 			
 			node<Key, T> &get_root(){
 				return *this->_root;
+			}
+
+			size_t get_size() const {
+				return _node_count;
 			}
 
 			template<class InputIt> void insert(node<Key, T> *&n, InputIt map_elem){
@@ -286,18 +278,83 @@ namespace ft
 				}
 			}
 
-			void testf(){
-				std::map<int, std::string> m;
-				m[2] = "two";
-				m[3] = "three";
-				m[4] = "four";
+			void insert_pair(node<Key, T> *&n, ft::pair<Key, T> const &map_elem){
+				std::allocator<node<Key, T> > tmp_all;
+				if (!n)
+				{
+					n = tmp_all.allocate(1);
+					tmp_all.construct(n, node<Key, T>());
+					_Alloc.construct(&(n->pair), map_elem);
+					n->right = n->left = NULL;
+					// std::cout << "creation "<< n->pair.first << std::endl;
+					this->_node_count += 1;
+				}
+				else if (map_elem.first > n->pair.first)
+				{
+					// std::cout << "jump right" << std::endl;
+					insert_pair(n->right, map_elem);	
+				}
+				else if (map_elem.first < n->pair.first)
+				{
+					// std::cout << "jump left" << std::endl;
+					insert_pair(n->left, map_elem);
+				}
+			}
 
-				std::map<int, std::string>::iterator it = m.begin();
-				insert(_root, it);
-				insert(_root, ++it);
-				insert(_root, ++it);
-				std::cout << search(_root, 3)->pair.second << std::endl;
+			// void testf(){
+			// 	std::map<int, std::string> m;
+			// 	m[2] = "two";
+			// 	m[3] = "three";
+			// 	m[4] = "four";
 
+			// 	std::map<int, std::string>::iterator it = m.begin();
+			// 	insert(_root, it);
+			// 	insert(_root, ++it);
+			// 	insert(_root, ++it);
+			// 	// std::cout << search(_root, 3)->pair.second << std::endl;
+
+			// }
+			NODE delete_node(NODE root, const Key &key){
+				std::allocator<node<Key, T> > tmp_all;
+				if (!root)
+					return root;
+				if (key < root->pair.first)
+					root->left = delete_node(root->left, key);
+				else if (key > root->pair.first)
+					root->right = delete_node(root->right, key);
+				else
+				{
+					if (!root->left && !root->right)
+					{
+						_Alloc.destroy(&root->pair);
+						tmp_all.deallocate(root, 1);
+						_node_count -= 1;
+						return NULL;
+					}
+					else if (!root->left)
+					{
+						NODE tmp = root->right;
+						_Alloc.destroy(&root->pair);
+						tmp_all.deallocate(root, 1);
+						_node_count -= 1;
+						return tmp;
+					}
+					else if (!root->right)
+					{
+						NODE tmp = root->left;
+						_Alloc.destroy(&root->pair);
+						tmp_all.deallocate(root, 1);
+						_node_count -= 1;
+						return tmp;
+					}
+
+					NODE suc = NULL; next(root, suc, root);
+					_Alloc.destroy(&root->pair);
+					_Alloc.construct(&(root->pair), ft::pair<Key, T>(suc->pair.first, suc->pair.second));
+					root->right = delete_node(root->right, key);
+				}
+				_node_count -= 1;
+				return root;
 			}
 
 			NODE search(NODE n, const Key &key){
@@ -395,15 +452,24 @@ template<
 			typedef const ft::map_iterator<map> const_iterator;
 
 			map() : _tree(value_type()){};
-			template< class InputIt > map(InputIt first, InputIt last)
+			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare())
 			: _tree(value_type()) {
+				InputIt next;
 				while (first != last)
 				{
-					_tree.insert(_tree._root, first);
+					next = first;
+					while (next != last)
+					{
+						if (!comp(first->first, next->first) && !comp(next->first, first->first) && first != next)
+							break;
+						else
+							_tree.insert(_tree._root, first);
+						next++;
+					}
 					first++;
 				}
 			}
-
+			~map(){}
 
 			value_type &get_tree(){
 				return _tree;
@@ -416,6 +482,63 @@ template<
 			iterator end(){
 				return iterator();
 			}
+
+			//////Capacity///////
+			bool empty() const {
+				return !_tree._root;
+			}
+
+			size_type size() const {
+				return _tree.get_size();
+			}
+
+			size_type max_size() const {
+				std::allocator<value_type> tmp;
+				return tmp.max_size();
+			}
+
+			//////MODIFIERS//////
+			void clear(){
+				while (_tree._root)
+					_tree._root = _tree.delete_node(_tree._root, _tree._root->pair.first);
+			}
+
+			void erase( iterator pos ){
+				_tree._root = _tree.delete_node(_tree._root, pos->first);
+			}
+
+			void erase( iterator first, iterator last ){
+				while (first != last)
+				{
+					_tree._root = _tree.delete_node(_tree._root, first->first);
+					first++;
+				}
+			}
+			size_type erase( const Key& key ){
+				size_type i = 0;
+				if (_tree.search(_tree._root, key))
+					i = 1;
+				_tree._root = _tree.delete_node(_tree._root, key);
+				return i;
+			}
+
+			ft::pair<iterator, bool> insert( const ft::pair<Key, T>& value ){
+				bool i = 1;
+				iterator it;
+				if ((it = find(value.first)) != end())
+					i = 0;
+				_tree.insert_pair(_tree._root, value);
+				return ft::pair<iterator, bool>(it, i);
+			}
+
+			//////LOOKUP//////
+			iterator find( const Key& key ){
+				iterator it = begin();
+				while (it.first != key && it != end())
+					it++;
+				return it;
+			}
+			
 		private:
 			value_type _tree;
 };
