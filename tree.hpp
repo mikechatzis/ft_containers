@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/05 19:41:27 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/05 19:43:24 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ template<typename Key, typename T> struct node{
 
 namespace ft
 {	
-	template<typename Key, typename T, class Allocator = std::allocator<ft::pair<const Key, T> > > class tree
+	template<typename Key, typename T, class Allocator > class tree
 	{
 		public:
 
@@ -439,7 +439,7 @@ template<
 		public:
 			typedef Key key_type;
 			typedef T mapped_type;
-			typedef ft::tree<Key, T> value_type;
+			typedef ft::tree<Key, T, Allocator> value_type;
 			typedef size_t size_type;
 			typedef std::ptrdiff_t difference_type;
 			typedef Compare key_compare;
