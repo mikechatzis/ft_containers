@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/05 19:40:23 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/06 15:34:37 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int main()
 	ft::map<int,int>::iterator it = m.begin();
 
 	while(it != m.end())
-		std::cout << it++->first << " ";
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl;
 
 	ft::map<int, int> m2(m.begin(), m.end());
@@ -85,7 +85,7 @@ int main()
 	--it;
 	std::cout<<"m, after erasing second element: ";
 	while(it != m.end())
-		std::cout << it++->first << " ";
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl;
 
 	it = m.begin(); it++; it++;
@@ -93,14 +93,14 @@ int main()
 	it = m.begin();
 	std::cout<<"m, after erasing range: ";
 	while(it != m.end())
-		std::cout << it++->first << " ";
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl;
 
 	std::cout<< "Key specific erase return value: "<<m.erase(3)<<std::endl;
 	it = m.begin();
 	std::cout<<"m, after erasing key '3': ";
 	while(it != m.end())
-		std::cout << it++->first << " ";
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl;
 	std::cout<< "key specific erase return value: "<<m.erase(3)<<std::endl<<std::endl;
 
@@ -109,14 +109,56 @@ int main()
 	it = m.begin();
 	std::cout<<"m, after inserting pair: ";
 	while(it != m.end())
-		std::cout << it++->first << " ";
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout<< "\ninsert success factor: "<< con.second << std::endl;
 	con = m.insert(p);
 	it = m.begin();
 	std::cout<<"m, after inserting pair with already existing key: ";
 	while(it != m.end())
-		std::cout << it++->first << " ";
-	std::cout<< "\ninsert success factor after attemted insertion of existing key: "<< con.second << std::endl;
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout<< "\ninsert success factor after attemted insertion of existing key: "<< con.second << std::endl << std::endl;
+
+	it = m.begin();
+	ft::map<int,int>::iterator ins = m.insert(++it, ft::pair<int,int>(-2,-2));
+	std::cout << "inserting new value at improper hint position #1: " << ins->first << std::endl;
+	std::cout<<"m, after inserting element (-2, -2), using hint: ";
+	it = m.begin();
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+		std::cout << std::endl << std::endl;
+	
+	it = m.begin();
+	ins = m.insert(it, ft::pair<int,int>(-1,-1));
+	std::cout << "inserting new value at proper hint position: " << ins->first << std::endl;
+	std::cout<<"m, after inserting element (-1, -1), using hint: ";
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	
+	ins = m.insert(--it, ft::pair<int,int>(10,10));
+	std::cout << "inserting new value at proper hint position: " << ins->first << std::endl;
+	std::cout<<"m, after inserting element (-1, -1), using hint: ";
+	it = m.begin();
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	
+	ins = m.insert(--it, ft::pair<int,int>(0,0));
+	std::cout << "inserting new value at improper hint position #2: " << ins->first << std::endl;
+	std::cout<<"m, after inserting element (-1, -1), using hint: ";
+	it = m.begin();
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	m.insert(mp.begin(), mp.end());
+	std::cout<<"m, after inserting range from std::map: ";
+	it = m.begin();
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	
+	
 	
 	// ft::tree<int, std::string> tree; tree.testf();
 	// tree._root = tree.delete_node(tree._root, 2);

@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/05 19:43:24 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/06 15:32:03 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,60 @@
 #include "ft_vector.hpp"
 #include <map>
 
+namespace ft
+{
+	template<typename T1, typename T2> class pair
+	{
+		public:
+			typedef T1 first_type;
+			typedef T2 second_type;
 
+			pair() : first(), second() {}
+			pair( const T1& x, const T2& y ) :first(x), second(y) {}
+
+			template< class U1, class U2 >
+			pair( const pair<U1, U2>& p ) : first(p.first), second(p.second) {}
+			pair (const pair& p) : first(p.first), second(p.second) {}
+
+			pair &operator=(const pair &other){
+				this->first = other.first;
+				this->second = other.second;
+				return *this;
+			}
+
+			void print(){
+				std::cout << first << "|" << second << std::endl;
+			}
+			
+			friend bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first == rhs.first && lhs.second == rhs.second;
+			}
+			friend bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first != rhs.first || lhs.second != rhs.second;
+			}
+			friend bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
+			}
+			friend bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first > rhs.first || (lhs.first == rhs.first && lhs.second > rhs.second);
+			}
+			friend bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first <= rhs.first || (lhs.first == rhs.first && lhs.second <= rhs.second);
+			}
+			friend bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+				return lhs.first >= rhs.first || (lhs.first == rhs.first && lhs.second >= rhs.second);
+			}
+			
+			T1 first;
+			T2 second;
+	};
+
+	template< class T1, class T2 >
+	pair<T1,T2> make_pair( T1 t, T2 u ){
+		return pair<T1, T2>(t, u);
+	}
+
+}
 
 namespace ft
 {
@@ -46,6 +99,7 @@ namespace ft
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
 			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
+			map_iterator(T *ptr, typename T::value_type::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
 			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
 			~map_iterator(){};
 			
@@ -154,62 +208,18 @@ namespace ft
 				return this;
 			}
 			
+			template<
+				class Key,
+				class U,
+				class Compare ,
+				class Allocator >
+				friend class map;
+			
 			typename value_type::key_type first;
 			typename value_type::value_type second;
 	};
-	
-	template<typename T1, typename T2> class pair
-	{
-		public:
-			typedef T1 first_type;
-			typedef T2 second_type;
-
-			pair() : first(), second() {}
-			pair( const T1& x, const T2& y ) :first(x), second(y) {}
-
-			template< class U1, class U2 >
-			pair( const pair<U1, U2>& p ) : first(p.first), second(p.second) {}
-			pair (const pair& p) : first(p.first), second(p.second) {}
-
-			pair &operator=(const pair &other){
-				this->first = other.first;
-				this->second = other.second;
-				return *this;
-			}
-
-			void print(){
-				std::cout << first << "|" << second << std::endl;
-			}
-			
-			friend bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first == rhs.first && lhs.second == rhs.second;
-			}
-			friend bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first != rhs.first || lhs.second != rhs.second;
-			}
-			friend bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
-			}
-			friend bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first > rhs.first || (lhs.first == rhs.first && lhs.second > rhs.second);
-			}
-			friend bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first <= rhs.first || (lhs.first == rhs.first && lhs.second <= rhs.second);
-			}
-			friend bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first >= rhs.first || (lhs.first == rhs.first && lhs.second >= rhs.second);
-			}
-			
-			T1 first;
-			T2 second;
-	};
-
-	template< class T1, class T2 >
-	pair<T1,T2> make_pair( T1 t, T2 u ){
-		return pair<T1, T2>(t, u);
-	}
-
 }
+
 
 template<typename Key, typename T> struct node{
 	ft::pair<const Key, T> pair;
@@ -219,28 +229,28 @@ template<typename Key, typename T> struct node{
 
 namespace ft
 {	
-	template<typename Key, typename T, class Allocator > class tree
+	template<typename Key, typename T, class allocator > class tree
 	{
 		public:
 
-			typedef std::allocator<ft::pair<const Key, T> > allocator_type;
+			typedef allocator allocator_type;
 			typedef T value_type;
 			typedef Key key_type;
 			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
-			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0) {
+			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0), _smallest(NULL) {
 				_Alloc = allocator_type(alloc);
 			}
-			tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
-				std::allocator<node<Key, T> > tmp_all;
-				_Alloc = allocator_type(alloc);
-				_root = tmp_all.allocate(1);
-				tmp_all.construct(_root, node<Key, T>());
-				_Alloc.construct(&(_root->pair), ft::pair<Key, T>(k, val));
-				_root->left = NULL;
-				_root->right = NULL;
-			}
+			// tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
+			// 	std::allocator<node<Key, T> > tmp_all;
+			// 	_Alloc = allocator_type(alloc);
+			// 	_root = tmp_all.allocate(1);
+			// 	tmp_all.construct(_root, node<Key, T>());
+			// 	_Alloc.construct(&(_root->pair), ft::pair<Key, T>(k, val));
+			// 	_root->left = NULL;
+			// 	_root->right = NULL;
+			// }
 			~tree(){
 				while(_root)
 					_root = delete_node(_root, _root->pair.first);
@@ -265,6 +275,7 @@ namespace ft
 					n->right = n->left = NULL;
 					// std::cout << "creation "<< n->pair.first << std::endl;
 					this->_node_count += 1;
+					
 				}
 				else if (map_elem->first > n->pair.first)
 				{
@@ -299,6 +310,18 @@ namespace ft
 					// std::cout << "jump left" << std::endl;
 					insert_pair(n->left, map_elem);
 				}
+			}
+
+			NODE insert_toPos(ft::pair<Key, T> const &map_elem){
+				std::allocator<node<Key, T> > tmp_all;
+				NODE n;
+				n = tmp_all.allocate(1);
+				tmp_all.construct(n, node<Key, T>());
+				_Alloc.construct(&(n->pair), map_elem);
+				n->right = n->left = NULL;
+				// std::cout << "creation "<< n->pair.first << std::endl;
+				this->_node_count += 1;
+				return n;
 			}
 
 			// void testf(){
@@ -355,6 +378,14 @@ namespace ft
 				}
 				_node_count -= 1;
 				return root;
+			}
+
+			NODE delete_node_atPos(NODE n){
+				std::allocator<node<Key, T> > tmp_all;
+				_Alloc.destroy(&n->pair);
+				tmp_all.deallocate(n, 1);
+				_node_count -= 1;
+				return NULL;
 			}
 
 			NODE search(NODE n, const Key &key){
@@ -420,10 +451,31 @@ namespace ft
 					n = n->right;
 				return n;
 			}
+
+			NODE first(){
+				NODE first = _root;
+				NODE tmp_root = _root;
+				while(first)
+				{
+					prev(_root, first, tmp_root);
+					if (first == _root || first == tmp_root)
+						break;
+					tmp_root = first;
+				}
+				return first;
+			}
 			
-			NODE _root;
+			template<
+				class D_Key,
+				class U,
+				class Compare ,
+				class Allocator >
+				friend class map;
+
 		private:
+			NODE _root;
 			size_t _node_count;
+			NODE _smallest;
 			allocator_type _Alloc;
 	};
 
@@ -477,7 +529,7 @@ template<
 
 			//////ITERATORS////
 			iterator begin(){
-				return iterator(this);
+				return iterator(this, _tree.first());
 			}
 			iterator end(){
 				return iterator();
@@ -526,18 +578,69 @@ template<
 				bool i = 1;
 				iterator it;
 				if ((it = find(value.first)) != end())
+				{
 					i = 0;
+					return ft::pair<iterator, bool>(it, i);
+				}
 				_tree.insert_pair(_tree._root, value);
+				it = find(value.first);
 				return ft::pair<iterator, bool>(it, i);
 			}
 
-			//////LOOKUP//////
-			iterator find( const Key& key ){
-				iterator it = begin();
-				while (it.first != key && it != end())
-					it++;
+			iterator insert( iterator hint, const ft::pair<Key, T>& value ){
+				iterator it;
+				if ((it = find(value.first)) != end())
+					return it;
+				if (!((hint.current_node)->left) && value.first < hint->first)
+				{
+					hint.current_node->left = _tree.insert_toPos(value);
+					if ((it = find(value.first)) != end())
+						return it;
+					else
+						hint.current_node->left = _tree.delete_node_atPos(hint.current_node->left);
+				}
+				else if (!((hint.current_node)->right) && value.first > hint->first)
+				{
+					hint.current_node->right = _tree.insert_toPos(value);
+					if ((it = find(value.first)) != end())
+						return it;
+					else
+						hint.current_node->right = _tree.delete_node_atPos(hint.current_node->right);
+				}
+				_tree.insert_pair(_tree._root, value);	
+				it = find(value.first);
 				return it;
 			}
+
+			template< class InputIt >
+			void insert( InputIt first, InputIt last ){
+				InputIt next;
+				const Compare& comp = Compare();
+				while (first != last)
+				{
+					next = first;
+					while (next != last)
+					{
+						if (!comp(first->first, next->first) && !comp(next->first, first->first) && first != next)
+							break;
+						else
+							_tree.insert(_tree._root, first);
+						next++;
+					}
+					first++;
+				}
+			}
+			
+			
+			//////LOOKUP//////
+			iterator find( const Key& key ){
+				typename value_type::NODE n = _tree.search(_tree._root, key);
+				if (!n)
+					return end();
+				else
+					return iterator(this, n);
+			}
+
 			
 		private:
 			value_type _tree;
