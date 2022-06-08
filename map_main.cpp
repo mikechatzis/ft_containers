@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/06 15:34:37 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/08 20:24:17 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ int main()
 				mp[2] = 2;
 				mp[3] = 3;
 				mp[4] = 4;
-				mp[5] = 5;
+				mp[5] = 124;
+				mp[5] = 42;
 				mp[6] = 6;
 	
 	ft::map<int, int> m(mp.begin(), mp.end());
@@ -158,6 +159,125 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
+	ft::map<int,int> m_swap(mp.begin(), mp.end());
+	ft::map<int,int>::iterator new_it = m_swap.begin();
+	it = m.begin();
+
+	std::cout << "new map 'm_swap' before swap: ";
+	while(new_it != m_swap.end())
+		std::cout << "(" << new_it->first << ", " << new_it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	std::cout << "iterators before swap in order: it, new_it: " << it->first << "....." << new_it->first << std::endl;
+	m_swap.swap(m);
+	std::cout << "iterators sfter swap in order: it, new_it: " << it->first << "....." << new_it->first << std::endl;
+	
+	std::cout<<"m, after swap with m_swap: ";
+	new_it = m.begin();
+	while(new_it != m.end())
+		std::cout << "(" << new_it->first << ", " << new_it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	
+	std::cout << "new map 'm_swap' after swap: ";
+	it = m_swap.begin();
+	while(it != m_swap.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	ft::swap(m_swap, m);
+	std::cout<<"m, after ft::swap with m_swap: ";
+	new_it = m.begin();
+	while(new_it != m.end())
+		std::cout << "(" << new_it->first << ", " << new_it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	
+	std::cout << "new map 'm_swap' after ft::swap: ";
+	it = m_swap.begin();
+	while(it != m_swap.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "using 'count': map 'm' has " << m.count(4) << " elements with a key of value '4'\n";
+	std::cout << "using 'count': map 'm' has " << m.count(42) << " elements with a key of value '42'";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "lower_bound(3): " << m_swap.lower_bound(3)->first << std::endl;
+	std::cout << "std lower_bound(3): " << mp.lower_bound(3)->first << std::endl;
+	std::cout << "lower_bound(-1): " << m_swap.lower_bound(-1)->first << std::endl;
+	std::cout << "std lower_bound(-1): " << mp.lower_bound(-1)->first << std::endl;
+	std::cout << "lower_bound(42): "; it = m_swap.lower_bound(42);
+	if (it == m_swap.end())
+		std::cout << "end iterator";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "upper_bound(3): " << m_swap.upper_bound(3)->first << std::endl;
+	std::cout << "std upper_bound(3): " << mp.upper_bound(3)->first << std::endl;
+	std::cout << "upper_bound(-1): " << m_swap.upper_bound(-1)->first << std::endl;
+	std::cout << "std upper_bound(-1): " << mp.upper_bound(-1)->first << std::endl;
+	std::cout << "upper_bound(42): "; it = m_swap.upper_bound(42);
+	if (it == m_swap.end())
+		std::cout << "end iterator";
+	std::cout << std::endl << std::endl;
+
+	ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator> pair = m_swap.equal_range(4);
+	std::pair<std::map<int,int>::iterator, std::map<int,int>::iterator> std_pair = mp.equal_range(4);
+	std::cout << "equal range first, second: " << pair.first->first << ", " <<  pair.second->first << std::endl;
+	std::cout << "std equal range first, second: " << std_pair.first->first << ", " <<  std_pair.second->first;
+	std::cout << std::endl << std::endl;
+
+	pair = m_swap.equal_range(1);
+	std_pair = mp.equal_range(1);
+	std::cout << "equal range first, second: " << pair.first->first << ", " <<  pair.second->first << std::endl;
+	std::cout << "std equal range first, second: " << std_pair.first->first << ", " <<  std_pair.second->first;
+	std::cout << std::endl << std::endl;
+
+	pair = m_swap.equal_range(6);
+	std_pair = mp.equal_range(6);
+	if (pair.second == m_swap.end() && std_pair.second == mp.end())
+		std::cout << "upper end: both 'second' iterators are 'end'" << std::endl;
+	std::cout << std::endl;
+
+	pair = m_swap.equal_range(42);
+	std_pair = mp.equal_range(42);
+	if (pair.second == m_swap.end() && std_pair.second == mp.end() && pair.first == m_swap.end() && std_pair.first == mp.end())
+		std::cout << "invalid valiue: all 4 iterators are 'end'" << std::endl;
+	std::cout << std::endl;
+
+	std::less<int> cmp = m_swap.key_comp();
+	std::cout << "compare object results: " << cmp(0,1) << std::endl << std::endl;
+
+	ft::map<int,int>::value_compare comp2 = m_swap.value_comp();
+	ft::pair<int,int> pa(1, 42), pb(-1, 42);
+	std::cout << "compare pairs using 'value compare' object results: " << comp2(pa, pb) << std::endl << std::endl;
+
+	std::cout << "testing 'at':\n";
+	std::cout << "valid input: " << m_swap.at(5) << std::endl;
+
+	try{
+		m_swap.at(42);
+	}
+	catch( const std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
+	try{
+		mp.at(42);
+	}
+	catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
+	std::cout << std::endl;
+	
+	m_swap[7] = 77;
+	std::cout << "testing [] operator overload, asigning new value. new m_swap: ";
+	it = m_swap.begin();
+	while(it != m_swap.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+	std::cout << "testing [] operator overload for random existing and non existing keys: ";
+	std::cout << m_swap[2] << " " << m_swap[12] << " " << m_swap[5];
+	std::cout << std::endl << std::endl;
+
+	
+	// const ft::map<int,int>::iterator it_const = m_swap.find(2);
 	
 	
 	// ft::tree<int, std::string> tree; tree.testf();

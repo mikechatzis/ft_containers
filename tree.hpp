@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/06 15:32:03 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/08 20:21:06 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <limits>
 #include <iterator>
 #include <iostream>
-#include <stdio.h>
+#include <array>
 #include <math.h>
 #include <unistd.h>
 #include "ft_vector.hpp"
@@ -87,11 +87,11 @@ namespace ft
 	template <typename T> class map_iterator
 	{
 		private:
-			typename T::value_type *p;
-			typename T::value_type::NODE current_node;
+			typename T::BST *p;
+			typename T::BST::NODE current_node;
 			
 		public:
-			typedef typename T::value_type value_type;
+			typedef typename T::BST BST;
 			typedef std::ptrdiff_t difference_type;
 			typedef T *pointer;
 			typedef T &reference;
@@ -99,7 +99,9 @@ namespace ft
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
 			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
-			map_iterator(T *ptr, typename T::value_type::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
+			map_iterator(T const *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
+			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
+			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
 			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
 			~map_iterator(){};
 			
@@ -117,8 +119,8 @@ namespace ft
 				return p;
 			}
 			map_iterator &operator++(){
-				typename T::value_type::NODE root = &p->get_root();
-				typename T::value_type::NODE suc = NULL;
+				typename T::BST::NODE root = &p->get_root();
+				typename T::BST::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
 				if (current_node)
@@ -136,8 +138,8 @@ namespace ft
 					second = current_node->pair.second;
 				}
 				else
-				{	typename T::value_type::NODE root = &p->get_root();
-					typename T::value_type::NODE pre = NULL;
+				{	typename T::BST::NODE root = &p->get_root();
+					typename T::BST::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
 					if (current_node)
@@ -151,8 +153,8 @@ namespace ft
 			map_iterator operator++(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
-				typename T::value_type::NODE root = &p->get_root();
-				typename T::value_type::NODE suc = NULL;
+				typename T::BST::NODE root = &p->get_root();
+				typename T::BST::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
 				if (current_node)
@@ -172,8 +174,8 @@ namespace ft
 					second = current_node->pair.second;
 				}
 				else
-				{	typename T::value_type::NODE root = &p->get_root();
-					typename T::value_type::NODE pre = NULL;
+				{	typename T::BST::NODE root = &p->get_root();
+					typename T::BST::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
 					if (current_node)
@@ -215,8 +217,8 @@ namespace ft
 				class Allocator >
 				friend class map;
 			
-			typename value_type::key_type first;
-			typename value_type::value_type second;
+			typename BST::key_type first;
+			typename BST::value_type second;
 	};
 }
 
@@ -376,7 +378,7 @@ namespace ft
 					_Alloc.construct(&(root->pair), ft::pair<Key, T>(suc->pair.first, suc->pair.second));
 					root->right = delete_node(root->right, key);
 				}
-				_node_count -= 1;
+				// _node_count -= 1;
 				return root;
 			}
 
@@ -445,6 +447,28 @@ namespace ft
 				}
 			}
 
+			NODE lower_bound(NODE root, const Key &key){
+				if (!(root->left) && !(root->right) && root->pair.first < key)
+					return NULL;
+				if (root->pair.first >= key && (!(root->left) || root->left->pair.first < key))
+					return root;
+				if (root->pair.first <= key)
+        			return lower_bound(root->right, key);
+ 				else
+					return lower_bound(root->left, key);
+			}
+
+			NODE upper_bound(NODE root, const Key &key){
+				if (!root || (!(root->left) && !(root->right) && root->pair.first < key))
+					return NULL;
+				if (root->pair.first > key && (!(root->left) || root->left->pair.first < key))
+					return root;
+				if (root->pair.first <= key)
+        			return upper_bound(root->right, key);
+ 				else
+					return upper_bound(root->left, key);
+			}
+
 			NODE last(){
 				NODE n = _root;
 				while (n->right)
@@ -489,9 +513,10 @@ template<
 	class map{
 		
 		public:
+			typedef ft::pair<const Key, T> value_type;
 			typedef Key key_type;
 			typedef T mapped_type;
-			typedef ft::tree<Key, T, Allocator> value_type;
+			typedef ft::tree<Key, T, Allocator> BST;
 			typedef size_t size_type;
 			typedef std::ptrdiff_t difference_type;
 			typedef Compare key_compare;
@@ -503,9 +528,15 @@ template<
 			typedef ft::map_iterator<map> iterator;
 			typedef const ft::map_iterator<map> const_iterator;
 
-			map() : _tree(value_type()){};
-			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare())
-			: _tree(value_type()) {
+			map(){
+				std::allocator<BST> tree_maker;
+				_tree = tree_maker.allocate(1);
+				tree_maker.construct(_tree, BST());
+			};
+			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()){
+				std::allocator<BST> tree_maker;
+				_tree = tree_maker.allocate(1);
+				tree_maker.construct(_tree, BST());
 				InputIt next;
 				while (first != last)
 				{
@@ -515,66 +546,78 @@ template<
 						if (!comp(first->first, next->first) && !comp(next->first, first->first) && first != next)
 							break;
 						else
-							_tree.insert(_tree._root, first);
+							_tree->insert(_tree->_root, first);
 						next++;
 					}
 					first++;
 				}
 			}
-			~map(){}
+			~map(){
+				std::allocator<BST> tree_maker;
+				tree_maker.destroy(_tree);
+				tree_maker.deallocate(_tree, 1);
+			}
 
-			value_type &get_tree(){
-				return _tree;
+			BST &get_tree() const {
+				return *_tree;
 			}
 
 			//////ITERATORS////
 			iterator begin(){
-				return iterator(this, _tree.first());
+				return iterator(this, _tree->first());
 			}
 			iterator end(){
 				return iterator();
 			}
 
+			const_iterator end() const {
+				return iterator();
+			}
+
+			const_iterator begin() const {
+				return const_iterator(this, _tree->first());
+			}
+			
 			//////Capacity///////
 			bool empty() const {
-				return !_tree._root;
+				return !_tree->_root;
 			}
 
 			size_type size() const {
-				return _tree.get_size();
+				return _tree->get_size();
 			}
 
 			size_type max_size() const {
-				std::allocator<value_type> tmp;
+				std::allocator<BST> tmp;
 				return tmp.max_size();
 			}
 
 			//////MODIFIERS//////
 			void clear(){
-				while (_tree._root)
-					_tree._root = _tree.delete_node(_tree._root, _tree._root->pair.first);
+				while (_tree->_root)
+					_tree->_root = _tree->delete_node(_tree->_root, _tree->_root->pair.first);
 			}
 
 			void erase( iterator pos ){
-				_tree._root = _tree.delete_node(_tree._root, pos->first);
+				_tree->_root = _tree->delete_node(_tree->_root, pos->first);
 			}
 
 			void erase( iterator first, iterator last ){
 				while (first != last)
 				{
-					_tree._root = _tree.delete_node(_tree._root, first->first);
+					_tree->_root = _tree->delete_node(_tree->_root, first->first);
 					first++;
 				}
 			}
 			size_type erase( const Key& key ){
 				size_type i = 0;
-				if (_tree.search(_tree._root, key))
+				if (_tree->search(_tree->_root, key))
 					i = 1;
-				_tree._root = _tree.delete_node(_tree._root, key);
+				_tree->_root = _tree->delete_node(_tree->_root, key);
 				return i;
 			}
 
-			ft::pair<iterator, bool> insert( const ft::pair<Key, T>& value ){
+			ft::pair<iterator, bool> insert( const value_type& value ){
 				bool i = 1;
 				iterator it;
 				if ((it = find(value.first)) != end())
@@ -582,32 +625,32 @@ template<
 					i = 0;
 					return ft::pair<iterator, bool>(it, i);
 				}
-				_tree.insert_pair(_tree._root, value);
+				_tree->insert_pair(_tree->_root, value);
 				it = find(value.first);
 				return ft::pair<iterator, bool>(it, i);
 			}
 
-			iterator insert( iterator hint, const ft::pair<Key, T>& value ){
+			iterator insert( iterator hint, const value_type& value ){
 				iterator it;
 				if ((it = find(value.first)) != end())
 					return it;
 				if (!((hint.current_node)->left) && value.first < hint->first)
 				{
-					hint.current_node->left = _tree.insert_toPos(value);
+					hint.current_node->left = _tree->insert_toPos(value);
 					if ((it = find(value.first)) != end())
 						return it;
 					else
-						hint.current_node->left = _tree.delete_node_atPos(hint.current_node->left);
+						hint.current_node->left = _tree->delete_node_atPos(hint.current_node->left);
 				}
 				else if (!((hint.current_node)->right) && value.first > hint->first)
 				{
-					hint.current_node->right = _tree.insert_toPos(value);
+					hint.current_node->right = _tree->insert_toPos(value);
 					if ((it = find(value.first)) != end())
 						return it;
 					else
-						hint.current_node->right = _tree.delete_node_atPos(hint.current_node->right);
+						hint.current_node->right = _tree->delete_node_atPos(hint.current_node->right);
 				}
-				_tree.insert_pair(_tree._root, value);	
+				_tree->insert_pair(_tree->_root, value);	
 				it = find(value.first);
 				return it;
 			}
@@ -624,27 +667,144 @@ template<
 						if (!comp(first->first, next->first) && !comp(next->first, first->first) && first != next)
 							break;
 						else
-							_tree.insert(_tree._root, first);
+							_tree->insert(_tree->_root, first);
 						next++;
 					}
 					first++;
 				}
 			}
+
+			void swap( map& other ){
+				BST *tmp = other._tree;
+				other._tree = _tree;
+				_tree = tmp;
+			}
 			
 			
 			//////LOOKUP//////
 			iterator find( const Key& key ){
-				typename value_type::NODE n = _tree.search(_tree._root, key);
+				typename BST::NODE n = _tree->search(_tree->_root, key);
 				if (!n)
 					return end();
 				else
 					return iterator(this, n);
 			}
 
+			const_iterator find( const Key& key ) const {
+				typename BST::NODE n = _tree->search(_tree->_root, key);
+				if (!n)
+					return end();
+				else
+					return const_iterator(this, n);
+			}
+
+			size_type count( const Key& key ) const {
+				const Compare comp;
+				iterator i = find(key);
+				if (!comp(i->first, key) && !comp(key, i->first))
+					return 1;
+				return 0;
+			}
+
+			iterator lower_bound( const Key& key ){
+				typename BST::NODE n = _tree->lower_bound(_tree->_root, key);
+				if (n)
+					return iterator(this, n);
+				else
+					return iterator();
+				
+			}
+
+			const_iterator lower_bound( const Key& key ) const {
+				typename BST::NODE n = _tree->lower_bound(_tree->_root, key);
+				if (n)
+					return const_iterator(this, n);
+				else
+					return const_iterator();
+				
+			}
+
+			iterator upper_bound( const Key& key ){
+				typename BST::NODE n = _tree->upper_bound(_tree->_root, key);
+				if (n)
+					return iterator(this, n);
+				else
+					return iterator();
+			}
+
+			const_iterator upper_bound( const Key& key ) const {
+				typename BST::NODE n = _tree->upper_bound(_tree->_root, key);
+				if (n)
+					return const_iterator(this, n);
+				else
+					return const_iterator();
+			}
+
+			ft::pair<iterator,iterator> equal_range( const Key& key ){
+				return ft::pair<iterator,iterator>(lower_bound(key), upper_bound(key));
+			}
+
+			//////OBSERVERS//////
+			key_compare key_comp() const {
+				return key_compare();
+			}
 			
+			class value_compare : public std::binary_function<value_type, value_type, bool>
+			{
+				friend class map<key_type, mapped_type, key_compare, Allocator>;
+				public:
+					bool operator()( const value_type& lhs, const value_type& rhs ) const {
+						return comp(lhs.first, rhs.first);
+					}
+
+				protected:
+					value_compare(Compare c) : comp(c) {}
+					Compare comp;
+			};
+			
+			value_compare value_comp() const {
+				return ft::map<Key, T, Compare, Allocator>::value_compare(key_compare());
+			}
+
+			//////ELEMENT ACCESS//////
+			T& at( const Key& key ){
+				iterator it = find(key);
+				if (it == end())
+					throw std::out_of_range("ft::map:at: key not found");
+				return it->second;
+			}
+			
+			const T& at( const Key& key ) const {
+				iterator it = find(key);
+				if (it == end())
+					throw std::out_of_range("ft::map:at: key not found");
+				return it->second;
+			}
+
+			mapped_type& operator[] (const key_type& key)
+			{
+				iterator tmp = this->find(key);
+
+				if (tmp == this->end())
+					_tree->insert_pair(_tree->_root, value_type(key, mapped_type()));
+				tmp = this->find(key);
+				return (tmp.current_node->pair.second);
+			}
+
+			mapped_type& operator=(mapped_type &t){
+				iterator it = find(t);
+				it.current_node->pair.second = t;
+				return t;
+			}
+
 		private:
-			value_type _tree;
+			BST *_tree;
 };
+
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs ){
+		lhs.swap(rhs);
+	}
 }
 
 #endif
