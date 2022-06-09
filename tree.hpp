@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/09 20:49:22 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/09 21:03:28 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -558,12 +558,12 @@ template<
 			typedef ft::map_iterator<map> iterator;
 			typedef const ft::map_iterator<map> const_iterator;
 
-			map(){
+			map(const key_compare& comp = key_compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
 				_tree = &tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
 			};
-			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()){
+			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
@@ -582,7 +582,7 @@ template<
 					first++;
 				}
 			}
-			map(map const &other){
+			map(map const &other, const key_compare& comp = key_compare()) : comp(comp) {
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
@@ -700,7 +700,6 @@ template<
 			template< class InputIt >
 			void insert( InputIt first, InputIt last ){
 				InputIt next;
-				const Compare& comp = Compare();
 				while (first != last)
 				{
 					next = first;
@@ -741,7 +740,6 @@ template<
 			}
 
 			size_type count( const Key& key ) const {
-				const Compare comp;
 				iterator i = find(key);
 				if (!comp(i->first, key) && !comp(key, i->first))
 					return 1;
@@ -835,6 +833,7 @@ template<
 
 		private:
 			BST *_tree;
+			std::less<key_type> comp;
 };
 
 	template< class Key, class T, class Compare, class Alloc >
