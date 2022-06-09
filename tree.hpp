@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/08 20:21:06 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/09 20:49:22 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,9 +241,12 @@ namespace ft
 			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
-			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0), _smallest(NULL) {
+			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0) {
 				_Alloc = allocator_type(alloc);
 			}
+			
+				
+			// }
 			// tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
 			// 	std::allocator<node<Key, T> > tmp_all;
 			// 	_Alloc = allocator_type(alloc);
@@ -256,7 +259,7 @@ namespace ft
 			~tree(){
 				while(_root)
 					_root = delete_node(_root, _root->pair.first);
-			};
+			}
 			////
 			
 			node<Key, T> &get_root(){
@@ -265,6 +268,34 @@ namespace ft
 
 			size_t get_size() const {
 				return _node_count;
+			}
+
+			const NODE clone_node_noLR(const NODE n) const {
+				if (!n)
+					return NULL;
+				std::allocator<ft::pair<const Key, T> > newp;
+				std::allocator<node<Key, T> > tmp_all;
+				NODE ret = tmp_all.allocate(1);
+				newp.construct(&(ret->pair), ft::pair<Key, T>(n->pair.first, n->pair.second));
+				n->right = n->left = NULL;
+				return ret;
+			}
+
+			void clone_tree(node<Key, T> *root) const {
+				NODE tmp = _root;
+				if (root)
+				{
+					NODE newleft = clone_node_noLR(tmp->left);
+					root->left = newleft;
+					tmp = tmp->left;
+					clone_tree(root->left);
+					
+					NODE newright = clone_node_noLR(tmp->right);
+					root->right = newright;
+					tmp = tmp->right;
+					clone_tree(root->right);
+				}
+				
 			}
 
 			template<class InputIt> void insert(node<Key, T> *&n, InputIt map_elem){
@@ -499,7 +530,6 @@ namespace ft
 		private:
 			NODE _root;
 			size_t _node_count;
-			NODE _smallest;
 			allocator_type _Alloc;
 	};
 
@@ -530,7 +560,7 @@ template<
 
 			map(){
 				std::allocator<BST> tree_maker;
-				_tree = tree_maker.allocate(1);
+				_tree = &tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
 			};
 			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()){
@@ -552,10 +582,22 @@ template<
 					first++;
 				}
 			}
+			map(map const &other){
+				std::allocator<BST> tree_maker;
+				_tree = tree_maker.allocate(1);
+				tree_maker.construct(_tree, BST());
+				insert(other.begin(), other.end());
+			}
+			
 			~map(){
 				std::allocator<BST> tree_maker;
 				tree_maker.destroy(_tree);
 				tree_maker.deallocate(_tree, 1);
+			}
+
+			map &operator=(map const & other){
+				clear();
+				insert(other.begin(), other.end());
 			}
 
 			BST &get_tree() const {
@@ -789,12 +831,6 @@ template<
 					_tree->insert_pair(_tree->_root, value_type(key, mapped_type()));
 				tmp = this->find(key);
 				return (tmp.current_node->pair.second);
-			}
-
-			mapped_type& operator=(mapped_type &t){
-				iterator it = find(t);
-				it.current_node->pair.second = t;
-				return t;
 			}
 
 		private:

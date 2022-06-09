@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/08 20:24:17 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/09 20:50:07 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ int main()
 	pair = m_swap.equal_range(42);
 	std_pair = mp.equal_range(42);
 	if (pair.second == m_swap.end() && std_pair.second == mp.end() && pair.first == m_swap.end() && std_pair.first == mp.end())
-		std::cout << "invalid valiue: all 4 iterators are 'end'" << std::endl;
+		std::cout << "invalid value: all 4 iterators are 'end'" << std::endl;
 	std::cout << std::endl;
 
 	std::less<int> cmp = m_swap.key_comp();
@@ -274,6 +274,20 @@ int main()
 	std::cout << std::endl << std::endl;
 	std::cout << "testing [] operator overload for random existing and non existing keys: ";
 	std::cout << m_swap[2] << " " << m_swap[12] << " " << m_swap[5];
+	std::cout << std::endl << std::endl;
+
+	ft::map<int,int> copy(m_swap);
+	std::cout << "testing copy constructor, creating a copy. new map 'copy':\n";
+	it = copy.begin();
+	while(it != copy.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	ft::map<int,int> copy2 = m_swap;
+	std::cout << "testing '=' operator overload, creating a copy. new map 'copy2':\n";
+	it = copy2.begin();
+	while(it != copy2.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
 	
