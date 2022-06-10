@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 17:15:59 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 17:55:53 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,14 +387,13 @@ namespace ft
 				return first;
 			}
 			
-			template<
-				class D_Key,
-				class U,
-				class Compare ,
-				class Allocator >
-				friend class map;
+			// template<
+			// 	class D_Key,
+			// 	class U,
+			// 	class Compare ,
+			// 	class Allocator >
+			// 	friend class map;
 
-		private:
 			NODE _root;
 			size_t _node_count;
 			allocator_type _Alloc;

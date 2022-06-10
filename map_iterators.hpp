@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 17:26:12 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 18:34:33 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,9 @@ namespace ft
 
 	template <typename T> class map_iterator
 	{
-		private:
+		public:
 			typename T::BST *p;
 			
-		public:
 			typedef typename T::BST BST;
 			typedef std::ptrdiff_t difference_type;
 			typedef T *pointer;
@@ -147,7 +146,7 @@ namespace ft
 				class Allocator >
 				friend class map;
 
-			template<class InputIt, class K> friend class reverse_map_iterator;
+			// template<class InputIt, class K> friend class reverse_map_iterator;
 			
 			typename BST::key_type first;
 			typename BST::value_type second;
@@ -173,9 +172,8 @@ namespace ft
 	}
 	
 	template<class InputIt, class T> class reverse_map_iterator {
-		private:
-			InputIt it;
 		public:
+			InputIt it;
 
 			typename T::BST::key_type first;
 			typename T::BST::value_type second;
@@ -197,12 +195,12 @@ namespace ft
 				return *(it.current_node->pair);
 			}
 
-			template<
-				class Key,
-				class U,
-				class Compare ,
-				class Allocator >
-				friend class map;
+			// template<
+			// 	class Key,
+			// 	class U,
+			// 	class Compare ,
+			// 	class Allocator >
+			// 	friend class map;
 				
 			reverse_map_iterator &operator++(){
 				it--;
