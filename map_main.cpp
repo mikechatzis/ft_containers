@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/09 20:50:07 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:03:18 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,15 +290,73 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
+	std::cout << "testing reverse iterator operations. m_swap reversed is:\n";
+	ft::map<int,int>::reverse_iterator rev_it = m_swap.rbegin();
+	while(rev_it != m_swap.rend())
+		std::cout << "(" << rev_it->first << ", " << rev_it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "testing end iterator --. m_swap last pair is:\n";
+	it = m_swap.end(); it--;
+	std::cout << "(" << it->first << ", " << it->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "testing end reverse iterator --. m_swap first pair is:\n";
+	rev_it = m_swap.rend(); rev_it--;
+	std::cout << "(" << rev_it->first << ", " << rev_it->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	it = m_swap.begin();
+	std::cout << "testing '*' operator of iterator:\n";
+	ft::pair<int, int> star_p = *it;
+	std::cout << "(" << star_p.first << ", " << star_p.second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	rev_it = m_swap.rbegin();
+	std::cout << "testing '*' operator of rev_iterator:\n";
+	ft::pair<int, int> starr_p = *rev_it;
+	std::cout << "(" << starr_p.first << ", " << starr_p.second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::map<int, std::string> strm;
+	strm[1] = "hello";
+	strm[2] = "world";
+	strm[3] = "how";
+	strm[4] = "ya doin?";
 	
-	// const ft::map<int,int>::iterator it_const = m_swap.find(2);
+	ft::map<int, std::string> f_strm(strm.begin(), strm.end());
+	ft::map<int, std::string>::iterator sit = f_strm.begin();
+	std::cout << "testing data types int, string:\n";
+	while(sit != f_strm.end())
+		std::cout << "(" << sit->first << ", " << sit++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "testing data types int, string:\ninserting new element\n";
+	f_strm.insert(ft::pair<int, std::string>(-2, "off text"));
+	sit = f_strm.begin();
+	while(sit != f_strm.end())
+		std::cout << "(" << sit->first << ", " << sit++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::map<std::string, std::string> strstrm;
+	strstrm["one"] = "hello";
+	strstrm["two"] = "world";
+	strstrm["three"] = "how";
+	strstrm["four"] = "ya doin?";
 	
-	
-	// ft::tree<int, std::string> tree; tree.testf();
-	// tree._root = tree.delete_node(tree._root, 2);
-	// std::cout << tree._root->pair.first << std::endl;
-	
-	
+	ft::map<std::string, std::string> f_strstrm(strstrm.begin(), strstrm.end());
+	ft::map<std::string, std::string>::iterator ssit = f_strstrm.begin();
+	std::cout << "testing data types std::string, string:\n";
+	while(ssit != f_strstrm.end())
+		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	std::cout << "testing data types std::string, std::string:\ninserting new element\n";
+	f_strstrm.insert(ft::pair<std::string, std::string>("minus one", "off text"));
+	ssit = f_strstrm.begin();
+	while(ssit != f_strstrm.end())
+		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
 	
 	
 }

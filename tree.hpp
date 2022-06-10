@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/09 21:03:28 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 16:03:32 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,10 @@ namespace ft
 			typedef ft::bidirectional_iterator_tag iterator_category;
 			
 			map_iterator() : p(NULL), current_node(NULL) {}
-			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
-			map_iterator(T const *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair.first), second(current_node->pair.second) {}
-			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
-			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair.first), second(current_node->pair.second){}
+			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair->first), second(current_node->pair->second) {}
+			map_iterator(T const *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair->first), second(current_node->pair->second) {}
+			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair->first), second(current_node->pair->second){}
+			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair->first), second(current_node->pair->second){}
 			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
 			~map_iterator(){};
 			
@@ -112,12 +112,10 @@ namespace ft
 				second = other.second;
 				return *this;
 			}
-			reference operator*(void) const{
-				return *p;
+			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*(void) const{
+				return *(current_node->pair);
 			}
-			pointer operator->(void) const{
-				return p;
-			}
+			
 			map_iterator &operator++(){
 				typename T::BST::NODE root = &p->get_root();
 				typename T::BST::NODE suc = NULL;
@@ -125,8 +123,8 @@ namespace ft
 				current_node = suc;
 				if (current_node)
 				{
-					first = current_node->pair.first;
-					second = current_node->pair.second;
+					first = current_node->pair->first;
+					second = current_node->pair->second;
 				}
 				return *this;
 			}
@@ -134,8 +132,8 @@ namespace ft
 				if (!this->current_node)
 				{
 					current_node = p->last();
-					first = current_node->pair.first;
-					second = current_node->pair.second;
+					first = current_node->pair->first;
+					second = current_node->pair->second;
 				}
 				else
 				{	typename T::BST::NODE root = &p->get_root();
@@ -144,8 +142,8 @@ namespace ft
 					current_node = pre;
 					if (current_node)
 					{
-						first = current_node->pair.first;
-						second = current_node->pair.second;
+						first = current_node->pair->first;
+						second = current_node->pair->second;
 					}
 				}
 				return *this;
@@ -159,8 +157,8 @@ namespace ft
 				current_node = suc;
 				if (current_node)
 				{
-					first = current_node->pair.first;
-					second = current_node->pair.second;
+					first = current_node->pair->first;
+					second = current_node->pair->second;
 				}
 				return copy;
 			}
@@ -170,8 +168,8 @@ namespace ft
 				if (!this->current_node)
 				{
 					current_node = p->last();
-					first = current_node->pair.first;
-					second = current_node->pair.second;
+					first = current_node->pair->first;
+					second = current_node->pair->second;
 				}
 				else
 				{	typename T::BST::NODE root = &p->get_root();
@@ -180,8 +178,8 @@ namespace ft
 					current_node = pre;
 					if (current_node)
 					{
-						first = current_node->pair.first;
-						second = current_node->pair.second;
+						first = current_node->pair->first;
+						second = current_node->pair->second;
 					}
 				}
 				return copy;
@@ -216,15 +214,118 @@ namespace ft
 				class Compare ,
 				class Allocator >
 				friend class map;
+
+			template<class InputIt, class K> friend class reverse_map_iterator;
 			
 			typename BST::key_type first;
 			typename BST::value_type second;
+	};
+
+	template<class InputIt, class T> class reverse_map_iterator {
+		private:
+			InputIt it;
+		public:
+
+			typename T::BST::key_type first;
+			typename T::BST::value_type second;
+					
+			reverse_map_iterator() : it() {}
+			reverse_map_iterator(T *ptr) : it(ptr), first(it->first), second(it->second) {}
+			reverse_map_iterator(T const *ptr) : it(ptr), first(it->first), second(it->second) {}
+			reverse_map_iterator(T *ptr, typename T::BST::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
+			reverse_map_iterator(T const *ptr, typename T::BST::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
+			reverse_map_iterator(const reverse_map_iterator &other) : it(other.it), first(it->first), second(it->second) {}
+			~reverse_map_iterator(){};
+
+			reverse_map_iterator &operator=(const reverse_map_iterator &other){
+				this->it = other.it;
+				return *this;
+			}
+
+			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*(void) const{
+				return *(it.current_node->pair);
+			}
+
+			template<
+				class Key,
+				class U,
+				class Compare ,
+				class Allocator >
+				friend class map;
+				
+			template<class K> friend class map_iterator;
+			reverse_map_iterator &operator++(){
+				it--;
+				first = it.current_node->pair->first;
+				second = it.current_node->pair->second;
+				return this;
+			}
+
+			reverse_map_iterator operator++(int dummy){
+				(void)dummy;
+				reverse_map_iterator copy = *this;
+				it--;
+				if (it.current_node){
+					first = it.current_node->pair->first;
+					second = it.current_node->pair->second;
+				}
+				return copy;
+			}
+
+			reverse_map_iterator &operator--(){
+				if (!this->it.current_node)
+				{
+					it.current_node = it.p->first();
+					first = it.current_node->pair->first;
+					second = it.current_node->pair->second;
+				}
+				else
+					it++;
+				return this;
+			}
+
+			reverse_map_iterator operator--(int dummy){
+				(void)dummy;
+				reverse_map_iterator copy = *this;
+				if (!this->it.current_node)
+				{
+					it.current_node = it.p->first();
+					first = it.current_node->pair->first;
+					second = it.current_node->pair->second;
+				}
+				else
+					it++;
+				return copy;
+			}
+
+			bool operator==(const reverse_map_iterator &rhs) const{
+				return this->it.current_node == rhs.it.current_node;
+			}
+			bool operator!=(const reverse_map_iterator &rhs) const{
+				return this->it.current_node != rhs.it.current_node;
+			}
+			bool operator<(const reverse_map_iterator &rhs) const{
+				return this->it.current_node < rhs.it.current_node;
+			}
+			bool operator>(const reverse_map_iterator &rhs) const{
+				return this->it.current_node > rhs.it.current_node;
+			}
+			bool operator>=(const reverse_map_iterator &rhs) const{
+				return this->it.current_node >= rhs.it.current_node;
+			}
+			bool operator<=(const reverse_map_iterator &rhs) const{
+				return this->it.current_node <= rhs.it.current_node;
+			}
+			
+			reverse_map_iterator<InputIt, T> *operator->(){
+				return this;
+			}
 	};
 }
 
 
 template<typename Key, typename T> struct node{
-	ft::pair<const Key, T> pair;
+	ft::pair<const Key, T> *pair;
 	node *left;
 	node *right;
 };
@@ -244,23 +345,27 @@ namespace ft
 			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0) {
 				_Alloc = allocator_type(alloc);
 			}
-			
-				
-			// }
-			// tree(const Key &k, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : _node_count(1) {
-			// 	std::allocator<node<Key, T> > tmp_all;
+			// tree(tree const &other, const allocator_type &alloc = allocator_type()) {
+			// 	std::allocator< node<Key,T> > al;
 			// 	_Alloc = allocator_type(alloc);
-			// 	_root = tmp_all.allocate(1);
-			// 	tmp_all.construct(_root, node<Key, T>());
-			// 	_Alloc.construct(&(_root->pair), ft::pair<Key, T>(k, val));
-			// 	_root->left = NULL;
-			// 	_root->right = NULL;
+			// 	if (!_root && other._root)
+			// 	{
+			// 		_root = al.allocate(1);
+			// 		_Alloc.construct(&(_root->pair), ft::pair< Key, T >(other._root->pair->first, other._root->pair->second));
+			// 		other.clone_tree(_root);
+			// 	}
+			// 	_node_count = other._node_count;
 			// }
 			~tree(){
 				while(_root)
-					_root = delete_node(_root, _root->pair.first);
+					_root = delete_node(_root, _root->pair->first);
 			}
 			////
+
+			tree &operator=(tree const &other){
+				other.clone_tree(_root);
+				return *this;
+			}
 			
 			node<Key, T> &get_root(){
 				return *this->_root;
@@ -276,13 +381,13 @@ namespace ft
 				std::allocator<ft::pair<const Key, T> > newp;
 				std::allocator<node<Key, T> > tmp_all;
 				NODE ret = tmp_all.allocate(1);
-				newp.construct(&(ret->pair), ft::pair<Key, T>(n->pair.first, n->pair.second));
+				newp.construct(&(ret->pair), ft::pair<Key, T>(n->pair->first, n->pair->second));
 				n->right = n->left = NULL;
 				return ret;
 			}
 
 			void clone_tree(node<Key, T> *root) const {
-				NODE tmp = _root;
+				static NODE tmp = _root;
 				if (root)
 				{
 					NODE newleft = clone_node_noLR(tmp->left);
@@ -295,7 +400,6 @@ namespace ft
 					tmp = tmp->right;
 					clone_tree(root->right);
 				}
-				
 			}
 
 			template<class InputIt> void insert(node<Key, T> *&n, InputIt map_elem){
@@ -304,18 +408,19 @@ namespace ft
 				{
 					n = tmp_all.allocate(1);
 					tmp_all.construct(n, node<Key, T>());
-					_Alloc.construct(&(n->pair), ft::pair<Key, T>(map_elem->first, map_elem->second));
+					n->pair = _Alloc.allocate(1);
+					_Alloc.construct(n->pair, ft::pair<Key, T>(map_elem->first, map_elem->second));
 					n->right = n->left = NULL;
-					// std::cout << "creation "<< n->pair.first << std::endl;
+					// std::cout << "creation "<< n->pair->first << std::endl;
 					this->_node_count += 1;
 					
 				}
-				else if (map_elem->first > n->pair.first)
+				else if (map_elem->first > n->pair->first)
 				{
 					// std::cout << "jump right" << std::endl;
 					insert(n->right, map_elem);	
 				}
-				else if (map_elem->first < n->pair.first)
+				else if (map_elem->first < n->pair->first)
 				{
 					// std::cout << "jump left" << std::endl;
 					insert(n->left, map_elem);
@@ -328,17 +433,18 @@ namespace ft
 				{
 					n = tmp_all.allocate(1);
 					tmp_all.construct(n, node<Key, T>());
-					_Alloc.construct(&(n->pair), map_elem);
+					n->pair = _Alloc.allocate(1);
+					_Alloc.construct(n->pair, map_elem);
 					n->right = n->left = NULL;
-					// std::cout << "creation "<< n->pair.first << std::endl;
+					// std::cout << "creation "<< n->pair->first << std::endl;
 					this->_node_count += 1;
 				}
-				else if (map_elem.first > n->pair.first)
+				else if (map_elem.first > n->pair->first)
 				{
 					// std::cout << "jump right" << std::endl;
 					insert_pair(n->right, map_elem);	
 				}
-				else if (map_elem.first < n->pair.first)
+				else if (map_elem.first < n->pair->first)
 				{
 					// std::cout << "jump left" << std::endl;
 					insert_pair(n->left, map_elem);
@@ -350,9 +456,10 @@ namespace ft
 				NODE n;
 				n = tmp_all.allocate(1);
 				tmp_all.construct(n, node<Key, T>());
-				_Alloc.construct(&(n->pair), map_elem);
+				n->pair = _Alloc.allocate(1);
+				_Alloc.construct(n->pair, map_elem);
 				n->right = n->left = NULL;
-				// std::cout << "creation "<< n->pair.first << std::endl;
+				// std::cout << "creation "<< n->pair->first << std::endl;
 				this->_node_count += 1;
 				return n;
 			}
@@ -367,22 +474,23 @@ namespace ft
 			// 	insert(_root, it);
 			// 	insert(_root, ++it);
 			// 	insert(_root, ++it);
-			// 	// std::cout << search(_root, 3)->pair.second << std::endl;
+			// 	// std::cout << search(_root, 3)->pair->second << std::endl;
 
 			// }
 			NODE delete_node(NODE root, const Key &key){
 				std::allocator<node<Key, T> > tmp_all;
 				if (!root)
 					return root;
-				if (key < root->pair.first)
+				if (key < root->pair->first)
 					root->left = delete_node(root->left, key);
-				else if (key > root->pair.first)
+				else if (key > root->pair->first)
 					root->right = delete_node(root->right, key);
 				else
 				{
 					if (!root->left && !root->right)
 					{
-						_Alloc.destroy(&root->pair);
+						_Alloc.destroy(root->pair);
+						_Alloc.deallocate(root->pair, 1);
 						tmp_all.deallocate(root, 1);
 						_node_count -= 1;
 						return NULL;
@@ -390,7 +498,8 @@ namespace ft
 					else if (!root->left)
 					{
 						NODE tmp = root->right;
-						_Alloc.destroy(&root->pair);
+						_Alloc.destroy(root->pair);
+						_Alloc.deallocate(root->pair, 1);
 						tmp_all.deallocate(root, 1);
 						_node_count -= 1;
 						return tmp;
@@ -398,15 +507,16 @@ namespace ft
 					else if (!root->right)
 					{
 						NODE tmp = root->left;
-						_Alloc.destroy(&root->pair);
+						_Alloc.destroy(root->pair);
+						_Alloc.deallocate(root->pair, 1);
 						tmp_all.deallocate(root, 1);
 						_node_count -= 1;
 						return tmp;
 					}
 
 					NODE suc = NULL; next(root, suc, root);
-					_Alloc.destroy(&root->pair);
-					_Alloc.construct(&(root->pair), ft::pair<Key, T>(suc->pair.first, suc->pair.second));
+					_Alloc.destroy(root->pair);
+					_Alloc.construct(root->pair, ft::pair<Key, T>(suc->pair->first, suc->pair->second));
 					root->right = delete_node(root->right, key);
 				}
 				// _node_count -= 1;
@@ -415,16 +525,17 @@ namespace ft
 
 			NODE delete_node_atPos(NODE n){
 				std::allocator<node<Key, T> > tmp_all;
-				_Alloc.destroy(&n->pair);
+				_Alloc.destroy(n->pair);
+				_Alloc.deallocate(n->pair, 1);
 				tmp_all.deallocate(n, 1);
 				_node_count -= 1;
 				return NULL;
 			}
 
 			NODE search(NODE n, const Key &key){
-				if (!n || n->pair.first == key)
+				if (!n || n->pair->first == key)
 					return n;
-				else if (n->pair.first < key)
+				else if (n->pair->first < key)
 					n = search(n->right, key);
 				else
 					n = search(n->left, key);
@@ -434,7 +545,7 @@ namespace ft
 			void next(node<Key, T> *&root, node<Key, T> *&suc, const NODE n){
 				if (!root)
 					return;
-				if (root->pair.first == n->pair.first)
+				if (root->pair->first == n->pair->first)
 				{
 					
 					if (root->right)
@@ -446,7 +557,7 @@ namespace ft
 					}
 					return;
 				}	
-				if (root->pair.first > n->pair.first)
+				if (root->pair->first > n->pair->first)
 				{
 					suc = root;
 					next(root->left, suc, n);
@@ -458,7 +569,7 @@ namespace ft
 			void prev(node<Key, T> *&root, node<Key, T> *&pre, const NODE n){
 				if (!root)
 					return;
-				if (root->pair.first == n->pair.first)
+				if (root->pair->first == n->pair->first)
 				{
 					if (root->left)
 					{
@@ -469,7 +580,7 @@ namespace ft
 					}
 					return;
 				}	
-				if (root->pair.first > n->pair.first)
+				if (root->pair->first > n->pair->first)
 					prev(root->left, pre, n);
 				else
 				{
@@ -479,22 +590,22 @@ namespace ft
 			}
 
 			NODE lower_bound(NODE root, const Key &key){
-				if (!(root->left) && !(root->right) && root->pair.first < key)
+				if (!(root->left) && !(root->right) && root->pair->first < key)
 					return NULL;
-				if (root->pair.first >= key && (!(root->left) || root->left->pair.first < key))
+				if (root->pair->first >= key && (!(root->left) || root->left->pair->first < key))
 					return root;
-				if (root->pair.first <= key)
+				if (root->pair->first <= key)
         			return lower_bound(root->right, key);
  				else
 					return lower_bound(root->left, key);
 			}
 
 			NODE upper_bound(NODE root, const Key &key){
-				if (!root || (!(root->left) && !(root->right) && root->pair.first < key))
+				if (!root || (!(root->left) && !(root->right) && root->pair->first < key))
 					return NULL;
-				if (root->pair.first > key && (!(root->left) || root->left->pair.first < key))
+				if (root->pair->first > key && (!(root->left) || root->left->pair->first < key))
 					return root;
-				if (root->pair.first <= key)
+				if (root->pair->first <= key)
         			return upper_bound(root->right, key);
  				else
 					return upper_bound(root->left, key);
@@ -557,6 +668,8 @@ template<
 			typedef typename Allocator::const_pointer const_pointer;
 			typedef ft::map_iterator<map> iterator;
 			typedef const ft::map_iterator<map> const_iterator;
+			typedef ft::reverse_map_iterator<iterator, map> reverse_iterator;
+			typedef const ft::reverse_map_iterator<iterator, map> const_reverse_iterator;
 
 			map(const key_compare& comp = key_compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
@@ -609,15 +722,38 @@ template<
 				return iterator(this, _tree->first());
 			}
 			iterator end(){
-				return iterator();
+				iterator it(this, _tree->last());
+				it.current_node = NULL;
+				return it;
 			}
 
 			const_iterator end() const {
-				return iterator();
+				iterator it(this, _tree->last());
+				it.current_node = NULL;
+				return it;
 			}
 
 			const_iterator begin() const {
 				return const_iterator(this, _tree->first());
+			}
+
+			reverse_iterator rbegin(){
+				return reverse_iterator(this, _tree->last());
+			}
+			reverse_iterator rend(){
+				reverse_iterator rev_it(this, _tree->first());
+				rev_it.it.current_node = NULL;
+				return  rev_it;
+			}
+
+			const_reverse_iterator rend() const {
+				reverse_iterator rev_it(this, _tree->first());
+				rev_it.it.current_node = NULL;
+				return  rev_it;
+			}
+
+			const_reverse_iterator rbegin() const {
+				return const_reverse_iterator(this, _tree->last());
 			}
 			
 			//////Capacity///////
@@ -637,7 +773,7 @@ template<
 			//////MODIFIERS//////
 			void clear(){
 				while (_tree->_root)
-					_tree->_root = _tree->delete_node(_tree->_root, _tree->_root->pair.first);
+					_tree->_root = _tree->delete_node(_tree->_root, _tree->_root->pair->first);
 			}
 
 			void erase( iterator pos ){
@@ -647,8 +783,9 @@ template<
 			void erase( iterator first, iterator last ){
 				while (first != last)
 				{
-					_tree->_root = _tree->delete_node(_tree->_root, first->first);
+					key_type tmp = first.first;
 					first++;
+					_tree->_root = _tree->delete_node(_tree->_root, tmp);
 				}
 			}
 			size_type erase( const Key& key ){
@@ -828,7 +965,7 @@ template<
 				if (tmp == this->end())
 					_tree->insert_pair(_tree->_root, value_type(key, mapped_type()));
 				tmp = this->find(key);
-				return (tmp.current_node->pair.second);
+				return (tmp.current_node->pair->second);
 			}
 
 		private:
