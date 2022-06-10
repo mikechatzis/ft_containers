@@ -6,12 +6,12 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 16:03:18 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 17:12:58 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tree.hpp"
-#include <array>
+#include "map.hpp"
+#include <map>
 
 int main()
 {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree.hpp                                           :+:      :+:    :+:   */
+/*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 16:03:32 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 17:15:59 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@
 #include <iostream>
 #include <array>
 #include <math.h>
-#include <unistd.h>
-#include "ft_vector.hpp"
-#include <map>
+#include "map_iterators.hpp"
 
 namespace ft
 {
@@ -52,28 +50,28 @@ namespace ft
 				std::cout << first << "|" << second << std::endl;
 			}
 			
-			friend bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first == rhs.first && lhs.second == rhs.second;
-			}
-			friend bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first != rhs.first || lhs.second != rhs.second;
-			}
-			friend bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
-			}
-			friend bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first > rhs.first || (lhs.first == rhs.first && lhs.second > rhs.second);
-			}
-			friend bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first <= rhs.first || (lhs.first == rhs.first && lhs.second <= rhs.second);
-			}
-			friend bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
-				return lhs.first >= rhs.first || (lhs.first == rhs.first && lhs.second >= rhs.second);
-			}
 			
 			T1 first;
 			T2 second;
 	};
+	template<typename T1, typename T2> bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first == rhs.first && lhs.second == rhs.second;
+	}
+	template<typename T1, typename T2> bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first != rhs.first || lhs.second != rhs.second;
+	}
+	template<typename T1, typename T2> bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
+	}
+	template<typename T1, typename T2> bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first > rhs.first || (lhs.first == rhs.first && lhs.second > rhs.second);
+	}
+	template<typename T1, typename T2> bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first <= rhs.first || (lhs.first == rhs.first && lhs.second <= rhs.second);
+	}
+	template<typename T1, typename T2> bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
+		return lhs.first >= rhs.first || (lhs.first == rhs.first && lhs.second >= rhs.second);
+	}
 
 	template< class T1, class T2 >
 	pair<T1,T2> make_pair( T1 t, T2 u ){
@@ -81,248 +79,6 @@ namespace ft
 	}
 
 }
-
-namespace ft
-{
-	template <typename T> class map_iterator
-	{
-		private:
-			typename T::BST *p;
-			typename T::BST::NODE current_node;
-			
-		public:
-			typedef typename T::BST BST;
-			typedef std::ptrdiff_t difference_type;
-			typedef T *pointer;
-			typedef T &reference;
-			typedef ft::bidirectional_iterator_tag iterator_category;
-			
-			map_iterator() : p(NULL), current_node(NULL) {}
-			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair->first), second(current_node->pair->second) {}
-			map_iterator(T const *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), first(current_node->pair->first), second(current_node->pair->second) {}
-			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair->first), second(current_node->pair->second){}
-			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), first(current_node->pair->first), second(current_node->pair->second){}
-			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second) {}
-			~map_iterator(){};
-			
-			map_iterator &operator=(const map_iterator &other){
-				p = other.p;
-				current_node = other.current_node;
-				first = other.first;
-				second = other.second;
-				return *this;
-			}
-			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*(void) const{
-				return *(current_node->pair);
-			}
-			
-			map_iterator &operator++(){
-				typename T::BST::NODE root = &p->get_root();
-				typename T::BST::NODE suc = NULL;
-				p->next(root, suc, current_node);
-				current_node = suc;
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-				return *this;
-			}
-			map_iterator &operator--(){
-				if (!this->current_node)
-				{
-					current_node = p->last();
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-				else
-				{	typename T::BST::NODE root = &p->get_root();
-					typename T::BST::NODE pre = NULL;
-					p->prev(root, pre, current_node);
-					current_node = pre;
-					if (current_node)
-					{
-						first = current_node->pair->first;
-						second = current_node->pair->second;
-					}
-				}
-				return *this;
-			}
-			map_iterator operator++(int dummy){
-				(void)dummy;
-				map_iterator<T> copy = *this;
-				typename T::BST::NODE root = &p->get_root();
-				typename T::BST::NODE suc = NULL;
-				p->next(root, suc, current_node);
-				current_node = suc;
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-				return copy;
-			}
-			map_iterator operator--(int dummy){
-				(void)dummy;
-				map_iterator<T> copy = *this;
-				if (!this->current_node)
-				{
-					current_node = p->last();
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-				else
-				{	typename T::BST::NODE root = &p->get_root();
-					typename T::BST::NODE pre = NULL;
-					p->prev(root, pre, current_node);
-					current_node = pre;
-					if (current_node)
-					{
-						first = current_node->pair->first;
-						second = current_node->pair->second;
-					}
-				}
-				return copy;
-			}
-
-			bool operator==(const map_iterator &rhs) const{
-				return this->current_node == rhs.current_node;
-			}
-			bool operator!=(const map_iterator &rhs) const{
-				return this->current_node != rhs.current_node;
-			}
-			bool operator<(const map_iterator &rhs) const{
-				return this->current_node < rhs.current_node;
-			}
-			bool operator>(const map_iterator &rhs) const{
-				return this->current_node > rhs.current_node;
-			}
-			bool operator>=(const map_iterator &rhs) const{
-				return this->current_node >= rhs.current_node;
-			}
-			bool operator<=(const map_iterator &rhs) const{
-				return this->current_node <= rhs.current_node;
-			}
-
-			map_iterator<T> *operator->(){
-				return this;
-			}
-			
-			template<
-				class Key,
-				class U,
-				class Compare ,
-				class Allocator >
-				friend class map;
-
-			template<class InputIt, class K> friend class reverse_map_iterator;
-			
-			typename BST::key_type first;
-			typename BST::value_type second;
-	};
-
-	template<class InputIt, class T> class reverse_map_iterator {
-		private:
-			InputIt it;
-		public:
-
-			typename T::BST::key_type first;
-			typename T::BST::value_type second;
-					
-			reverse_map_iterator() : it() {}
-			reverse_map_iterator(T *ptr) : it(ptr), first(it->first), second(it->second) {}
-			reverse_map_iterator(T const *ptr) : it(ptr), first(it->first), second(it->second) {}
-			reverse_map_iterator(T *ptr, typename T::BST::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
-			reverse_map_iterator(T const *ptr, typename T::BST::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
-			reverse_map_iterator(const reverse_map_iterator &other) : it(other.it), first(it->first), second(it->second) {}
-			~reverse_map_iterator(){};
-
-			reverse_map_iterator &operator=(const reverse_map_iterator &other){
-				this->it = other.it;
-				return *this;
-			}
-
-			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*(void) const{
-				return *(it.current_node->pair);
-			}
-
-			template<
-				class Key,
-				class U,
-				class Compare ,
-				class Allocator >
-				friend class map;
-				
-			template<class K> friend class map_iterator;
-			reverse_map_iterator &operator++(){
-				it--;
-				first = it.current_node->pair->first;
-				second = it.current_node->pair->second;
-				return this;
-			}
-
-			reverse_map_iterator operator++(int dummy){
-				(void)dummy;
-				reverse_map_iterator copy = *this;
-				it--;
-				if (it.current_node){
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
-				return copy;
-			}
-
-			reverse_map_iterator &operator--(){
-				if (!this->it.current_node)
-				{
-					it.current_node = it.p->first();
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
-				else
-					it++;
-				return this;
-			}
-
-			reverse_map_iterator operator--(int dummy){
-				(void)dummy;
-				reverse_map_iterator copy = *this;
-				if (!this->it.current_node)
-				{
-					it.current_node = it.p->first();
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
-				else
-					it++;
-				return copy;
-			}
-
-			bool operator==(const reverse_map_iterator &rhs) const{
-				return this->it.current_node == rhs.it.current_node;
-			}
-			bool operator!=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node != rhs.it.current_node;
-			}
-			bool operator<(const reverse_map_iterator &rhs) const{
-				return this->it.current_node < rhs.it.current_node;
-			}
-			bool operator>(const reverse_map_iterator &rhs) const{
-				return this->it.current_node > rhs.it.current_node;
-			}
-			bool operator>=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node >= rhs.it.current_node;
-			}
-			bool operator<=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node <= rhs.it.current_node;
-			}
-			
-			reverse_map_iterator<InputIt, T> *operator->(){
-				return this;
-			}
-	};
-}
-
 
 template<typename Key, typename T> struct node{
 	ft::pair<const Key, T> *pair;
