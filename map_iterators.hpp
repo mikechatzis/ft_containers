@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 18:34:33 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 18:52:54 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 namespace ft
 {
 	template<typename T1, typename T2> class pair;
-	template<typename Key, typename T, class allocator > class tree;
+	template<typename Key, typename T, class allocator, class Compare > class tree;
 
 	class bidirectional_iterator_tag;
 	class random_access_iterator_tag;
@@ -246,23 +246,23 @@ namespace ft
 				return copy;
 			}
 
-			bool operator==(const reverse_map_iterator &rhs) const{
-				return this->it.current_node == rhs.it.current_node;
+			friend bool operator==(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node == rhs.it.current_node;
 			}
-			bool operator!=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node != rhs.it.current_node;
+			friend bool operator!=(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node != rhs.it.current_node;
 			}
-			bool operator<(const reverse_map_iterator &rhs) const{
-				return this->it.current_node < rhs.it.current_node;
+			friend bool operator<(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node < rhs.it.current_node;
 			}
-			bool operator>(const reverse_map_iterator &rhs) const{
-				return this->it.current_node > rhs.it.current_node;
+			friend bool operator>(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node > rhs.it.current_node;
 			}
-			bool operator>=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node >= rhs.it.current_node;
+			friend bool operator>=(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node >= rhs.it.current_node;
 			}
-			bool operator<=(const reverse_map_iterator &rhs) const{
-				return this->it.current_node <= rhs.it.current_node;
+			friend bool operator<=(const reverse_map_iterator &lhs, const reverse_map_iterator &rhs) {
+				return lhs.it.current_node <= rhs.it.current_node;
 			}
 			
 			reverse_map_iterator<InputIt, T> *operator->(){

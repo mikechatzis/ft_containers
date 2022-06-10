@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 17:55:53 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/10 18:56:08 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,20 @@ template<typename Key, typename T> struct node{
 
 namespace ft
 {	
-	template<typename Key, typename T, class allocator > class tree
+	template<typename Key, typename T, class allocator, class Compare > class tree
 	{
 		public:
 
 			typedef allocator allocator_type;
+			typedef Compare compare_type;
 			typedef T value_type;
 			typedef Key key_type;
 			typedef node<Key, T>* NODE;
 
 			//CONSTRUCTORS & DESTRUCTOR//
-			tree(const allocator_type &alloc = allocator_type()) : _root(NULL), _node_count(0) {
+			tree(const allocator_type &alloc = allocator_type(), const compare_type &comp = compare_type()) : _root(NULL), _node_count(0) {
 				_Alloc = allocator_type(alloc);
+				this->comp = compare_type(comp);
 			}
 			// tree(tree const &other, const allocator_type &alloc = allocator_type()) {
 			// 	std::allocator< node<Key,T> > al;
@@ -171,12 +173,12 @@ namespace ft
 					this->_node_count += 1;
 					
 				}
-				else if (map_elem->first > n->pair->first)
+				else if (comp(n->pair->first, map_elem->first))
 				{
 					// std::cout << "jump right" << std::endl;
 					insert(n->right, map_elem);	
 				}
-				else if (map_elem->first < n->pair->first)
+				else if (comp(map_elem->first, n->pair->first))
 				{
 					// std::cout << "jump left" << std::endl;
 					insert(n->left, map_elem);
@@ -397,6 +399,7 @@ namespace ft
 			NODE _root;
 			size_t _node_count;
 			allocator_type _Alloc;
+			compare_type comp;
 	};
 
 
@@ -412,7 +415,7 @@ template<
 			typedef ft::pair<const Key, T> value_type;
 			typedef Key key_type;
 			typedef T mapped_type;
-			typedef ft::tree<Key, T, Allocator> BST;
+			typedef ft::tree<Key, T, Allocator, Compare> BST;
 			typedef size_t size_type;
 			typedef std::ptrdiff_t difference_type;
 			typedef Compare key_compare;
@@ -568,7 +571,7 @@ template<
 				iterator it;
 				if ((it = find(value.first)) != end())
 					return it;
-				if (!((hint.current_node)->left) && value.first < hint->first)
+				if (!((hint.current_node)->left) && comp(value.first, hint->first))
 				{
 					hint.current_node->left = _tree->insert_toPos(value);
 					if ((it = find(value.first)) != end())
@@ -576,7 +579,7 @@ template<
 					else
 						hint.current_node->left = _tree->delete_node_atPos(hint.current_node->left);
 				}
-				else if (!((hint.current_node)->right) && value.first > hint->first)
+				else if (!((hint.current_node)->right) && comp(hint->first, value.first))
 				{
 					hint.current_node->right = _tree->insert_toPos(value);
 					if ((it = find(value.first)) != end())
