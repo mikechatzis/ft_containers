@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 12:42:17 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 13:15:40 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,34 @@ namespace ft{
 	template <> struct is_integral<unsigned long>      : public true_type {};
 	template <> struct is_integral<long long>          : public true_type {};
 	template <> struct is_integral<unsigned long long> : public true_type {};
+
+	template< class InputIt1, class InputIt2 >
+	bool lexicographical_compare( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2 ){
+		while (*first1 != *last1 && *first2 != *last2)
+		{
+			if (*first1 < *first2)
+				return true;
+			first1++;
+			first2++;
+		}
+		if (*first1 == *last1 && *first2 != *last2)
+			return true;
+		return false;
+	}
+
+	template< class InputIt1, class InputIt2, class Compare >
+	bool lexicographical_compare( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp ){
+		while (*first1 != *last1 && *first2 != *last2)
+		{
+			if (comp(*first1, *first2))
+				return true;
+			first1++;
+			first2++;
+		}
+		if (*first1 == *last1 && *first2 != *last2)
+			return true;
+		return false;
+	}
 }
 
 

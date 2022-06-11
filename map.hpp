@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 10:19:42 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 16:43:25 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ namespace ft
 
 			pair() : first(), second() {}
 			pair( const T1& x, const T2& y ) :first(x), second(y) {}
+			// pair(pair const &other): first(other.first), second(other.second){}
 
 			template< class U1, class U2 >
 			pair( const pair<U1, U2>& p ) : first(p.first), second(p.second) {}
@@ -369,6 +370,8 @@ namespace ft
 
 			NODE last(){
 				NODE n = _root;
+				if (!n)
+					return n;
 				while (n->right)
 					n = n->right;
 				return n;
@@ -429,13 +432,20 @@ template<
 
 			map(const key_compare& comp = key_compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
-				_tree = &tree_maker.allocate(1);
+				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
+				Allocator al;
+				dummy = al.allocate(1);
+				al.construct(dummy, value_type());
 			};
 			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
+				_tree->_root = NULL;
+				Allocator al;
+				dummy = al.allocate(1);
+				al.construct(dummy, value_type());
 				InputIt next;
 				while (first != last)
 				{
@@ -455,6 +465,9 @@ template<
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
+				Allocator al;
+				dummy = al.allocate(1);
+				al.construct(dummy, value_type(other.dummy->first, other.dummy->second));
 				insert(other.begin(), other.end());
 			}
 			
@@ -462,11 +475,17 @@ template<
 				std::allocator<BST> tree_maker;
 				tree_maker.destroy(_tree);
 				tree_maker.deallocate(_tree, 1);
+				Allocator al;
+				al.destroy(dummy);
+				al.deallocate(dummy, 1);
 			}
 
 			map &operator=(map const & other){
 				clear();
 				insert(other.begin(), other.end());
+				Allocator al;
+				al.destroy(dummy);
+				al.construct(dummy, value_type(other.dummy->first, other.dummy->second));
 			}
 
 			BST &get_tree() const {
@@ -634,6 +653,8 @@ template<
 
 			size_type count( const Key& key ) const {
 				iterator i = find(key);
+				if (i == end())
+					return 0;
 				if (!comp(i->first, key) && !comp(key, i->first))
 					return 1;
 				return 0;
@@ -724,6 +745,7 @@ template<
 				return (tmp.current_node->pair->second);
 			}
 
+			value_type *dummy;
 		private:
 			BST *_tree;
 			std::less<key_type> comp;

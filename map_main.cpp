@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 09:43:15 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 16:22:47 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int main()
 	
 	ft::map<int, int> m(mp.begin(), mp.end());
 	ft::map<int,int>::iterator it = m.begin();
+	it++;
 
 	while(it != m.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
@@ -77,13 +78,26 @@ int main()
 		std::cout << "m2 is empty\n";
 	else
 		std::cout << "m2 is not empty\n";
+
+	it = m2.begin();
+	if (it == m2.end())
+		std::cout << "begin iterator of empty map is same as end iterator";
+	std::cout << std::endl << std::endl;
+
+	m2.insert(ft::pair<int,int>(1,1));
+	it = m2.begin();
+	std::cout<<"m2, inserting at empty map. m2: ";
+	while(it != m.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+		
 	std::cout << "m2 size: " << m2.size() << std::endl << std::endl;
 	std::cout << "m2 max size: " << m2.max_size() << std::endl;
 	std::cout << "std::map max size: " << m.max_size() << std::endl << std::endl;
 
 	it = m.begin();
 	m.erase(++it);
-	--it;
+	it--;
 	std::cout<<"m, after erasing second element: ";
 	while(it != m.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
