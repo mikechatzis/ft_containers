@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 17:12:58 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 09:43:15 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,5 +358,8 @@ int main()
 		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	
+	const ft::map<int,int>::iterator con_it = m.begin();
+	it = m.begin();
+	if (con_it == it)
+		std::cout << "iterator to const iterator comparison successful\n";
 }

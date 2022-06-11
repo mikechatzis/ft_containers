@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 18:56:08 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 10:19:42 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,11 @@
 #include <memory>
 #include <exception>
 #include <stdexcept>
-#include <string>
-#include <limits>
-#include <iterator>
-#include <iostream>
-#include <array>
-#include <math.h>
 #include "map_iterators.hpp"
+// #include <string>
+// #include <iostream>
+// #include <array>
+// #include <math.h>
 
 namespace ft
 {

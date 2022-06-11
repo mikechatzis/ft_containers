@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/10 18:52:54 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 10:34:33 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 #include <memory>
 #include <exception>
 #include <stdexcept>
-#include <string>
-#include <limits>
-#include <iterator>
 #include <iostream>
-#include <array>
-#include <math.h>
+// #include <string>
+// #include <limits>
+// #include <iterator>
+// #include <array>
+// #include <math.h>
 #include "map.hpp"
 
 
@@ -40,6 +40,7 @@ namespace ft
 			
 			typedef typename T::BST BST;
 			typedef std::ptrdiff_t difference_type;
+			typedef typename T::value_type value_type;
 			typedef T *pointer;
 			typedef T &reference;
 			typedef ft::bidirectional_iterator_tag iterator_category;
@@ -174,6 +175,13 @@ namespace ft
 	template<class InputIt, class T> class reverse_map_iterator {
 		public:
 			InputIt it;
+
+			typedef InputIt iterator_type;
+			typedef typename InputIt::iterator_category iterator_category;
+			typedef typename InputIt::value_type value_type;
+			typedef typename InputIt::difference_type difference_type;
+			typedef typename InputIt::pointer pointer;
+			typedef typename InputIt::reference reference;
 
 			typename T::BST::key_type first;
 			typename T::BST::value_type second;

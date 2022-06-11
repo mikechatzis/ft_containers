@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   vector_main.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/05/29 19:41:49 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/11 12:38:57 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,14 +84,14 @@ int main()
 	v5.swap(v3);
 	std::cout << "v5 swapped with v3. New v5 size: "<< v5.size() << ":" << v5.capacity() << " | "; v5.print(); std::cout << " New v3 size: " << v3.size() <<", " << v3.capacity() << " | "; v3.print();
 
-	v5.assign(3, (size_t)31);
+	v5.assign(3, 31);
 	std::cout << "v5 reassigned to smaller size. New v5 size: " << v5.size() << ":" << v5.capacity() << " | "; v5.print();
-	v5.assign(65, (size_t)42);
+	v5.assign(65, 42);
 	std::cout << "v5 reassigned to bigger size. New v5 size: " << v5.size() << ":" << v5.capacity() << " | "; v5.print();
 	v5.assign(v3_reverse.begin(), v3_reverse.end());
 	std::cout << "v5 reassigned from range to smaller size. New v5 size: " << v5.size() << ":" << v5.capacity() << " | "; v5.print();
 	v5.clear();
-	v5.assign(1, (size_t)42);
+	v5.assign(1, 42);
 	v5.assign(v3_reverse.begin() + 1, v3_reverse.end() - 1);
 	std::cout << "v5 reassigned from range to bigger size. New v5 size: " << v5.size() << ":" << v5.capacity() << " | "; v5.print();
 
@@ -103,21 +103,21 @@ int main()
 	e = v5.insert(v5.end(), 128);
 	std::cout << "inserted new value '128' to v5. v5 enough capacity. New v5 size: " << v5.size() << ":" << v5.capacity() << ", insert iterator points to: " << *e << " | "; v5.print();
 	
-	ft::vector<int> v6(10, (size_t)2);
+	ft::vector<int> v6(10, 2);
 	v6.reserve(20);
-	v6.insert(v6.begin() + 4, 2, (size_t)66);
+	v6.insert(v6.begin() + 4, 2, 66);
 	std::cout << "inserted new values 2 x '66' to v6. v6 has enough capacity. New v6 size: " << v6.size() << ":" << v6.capacity() << " | "; v6.print();
 	v6.clear();
-	v6.assign(10, (size_t)10);
-	v6.insert(v6.end(), 4, (size_t)42);
+	v6.assign(10, 10);
+	v6.insert(v6.end(), 4, 42);
 		std::cout << "inserted new values 2 x '66' to v6. v6 does not have enough capacity. New v6 size: "<< v6.size() << ":" << v6.capacity() << " | "; v6.print();
 	v6.clear();
-	v6.assign(10, (size_t)10);
+	v6.assign(10, 10);
 	v6.reserve(62);
 	v6.insert(v6.begin(), v5.begin() + 1, v5.end());
 	std::cout << "inserted new values from v5's range to v6. v6 has enough capacity. New v6 size: " << v6.size() << ":" << v6.capacity() << " | "; v6.print();
 	v6.clear();
-	v6.assign(10, (size_t)10);
+	v6.assign(10, 10);
 	v6.insert(v6.end(), v5.begin(), v5.end());
 	std::cout << "inserted new values from v5's range to v6. v6 does not have enough capacity. New v6 size: " << v6.size() << ":" << v6.capacity() << " | "; v6.print();
 
