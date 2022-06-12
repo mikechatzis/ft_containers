@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 12:50:55 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 14:00:36 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ int main()
 	
 	ft::map<int, int> dum;
 	ft::map<int, int> m(mp.begin(), mp.end());
+	ft::map<int, int> mc(m);
+	ft::map<int,int>::iterator itc = mc.begin();
+	std::cout << "testing copy constructor\n";
+	while(itc != mc.end())
+		std::cout << "(" << itc->first << ", " << itc++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
 	ft::map<int,int>::iterator it = m.begin();
 	it++;
 
@@ -376,4 +382,11 @@ int main()
 	it = m.begin();
 	if (con_it == it)
 		std::cout << "iterator to const iterator comparison successful\n";
+
+	mc = m;
+	it = mc.begin();
+	std::cout << "testing '=' operator, copied m:\n";
+	while(it != mc.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
 }

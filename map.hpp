@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 13:28:53 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 13:59:49 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,8 +457,10 @@ template<
 					first++;
 				}
 			}
-			map(map const &other, const key_compare& comp = key_compare()) : comp(comp) {
-				std::allocator<BST> tree_maker;
+			map(map const &other) : comp(other.comp) {
+				typedef typename std::remove_reference<decltype(other)>::type::allocator_type all;
+				typedef typename std::remove_reference<decltype(other)>::type::key_compare c;
+				std::allocator<ft::tree<Key, T, all, c> > tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
 				insert(other.begin(), other.end());
@@ -471,8 +473,17 @@ template<
 			}
 
 			map &operator=(map const & other){
-				clear();
+				typedef typename std::remove_reference<decltype(other)>::type::allocator_type all;
+				typedef typename std::remove_reference<decltype(other)>::type::key_compare c;
+				std::allocator<BST> tree_crusher;
+				tree_crusher.destroy(_tree);
+				tree_crusher.deallocate(_tree, 1);
+				std::allocator<ft::tree<Key, T, all, c> > tree_maker;
+				_tree = tree_maker.allocate(1);
+				tree_maker.construct(_tree, BST());
 				insert(other.begin(), other.end());
+				insert(other.begin(), other.end());
+				return *this;
 			}
 
 			BST &get_tree() const {
