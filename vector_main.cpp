@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 12:38:57 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 15:25:55 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 int main()
 {
+	std::cout << "\n";
 	ft::vector<int> v;
 	ft::vector<std::string> *v2 = new ft::vector<std::string>(15, "hello");
 	ft::vector<std::string> v2_copy(*v2);

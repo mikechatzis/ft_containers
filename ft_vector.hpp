@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 15:30:56 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 15:06:11 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -481,17 +481,17 @@ namespace ft
 			}
 			
 
-			//DEBUG
-			// void print(){
-			// 	if (!this->arr_)
-			// 	{
-			// 		std::cout << "vector empty";
-			// 	}
-			// 	for (size_t i = 0; i < this->size_; i++)
-			// 		std::cout << this->arr_[i] << " ";
-			// 	std::cout << std::endl;
-			// }
-			///////
+			//////DEBUG//////
+			void print(){
+				if (!this->arr_)
+				{
+					std::cout << "vector empty";
+				}
+				for (size_t i = 0; i < this->size_; i++)
+					std::cout << this->arr_[i] << " ";
+				std::cout << std::endl;
+			}
+			/////
 
 			//OPERATORS
 			vector &operator=(vector const &other){
