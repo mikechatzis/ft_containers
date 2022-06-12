@@ -6,7 +6,7 @@
 #    By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/21 14:41:30 by mchatzip          #+#    #+#              #
-#    Updated: 2022/06/12 15:27:19 by mchatzip         ###   ########.fr        #
+#    Updated: 2022/06/12 17:39:09 by mchatzip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,10 @@ vector: $(VECTOR_OBJ)
 		$(CC) -g $(CFLAGS) -o vector $(VECTOR_OBJ)
 		$(CC) -g $(CFLAGS) -o stl_vector stl_vector_main.cpp
 
+stack: 
+		$(CC) -g $(CFLAGS) -o stack stack_main.cpp;
+		$(CC) -g $(CFLAGS) -o stl_stack stl_stack_main.cpp;
+
 utils: $(UTILS_OBJ)
 		$(CC) -g $(CFLAGS) -o utils $(UTILS_OBJ)
 
@@ -46,15 +50,17 @@ utils: $(UTILS_OBJ)
 
 clean:		
 			$(RM) *.o *.comp
-			$(RM) -r containers.dSYM map.dSYM vector.dSYM utils.dSYM stl_map.dSYM stl_vector.dSYM
+			$(RM) -r containers.dSYM map.dSYM vector.dSYM utils.dSYM stl_map.dSYM stl_vector.dSYM stack.dSYM stl_stack.dSYM
 
 fclean:		clean
-			$(RM) $(NAME); $(RM) map utils stl_map stl_vector
+			$(RM) $(NAME); $(RM) map utils stl_map stl_vector stack stl_stack
 
 re:		fclean all
 
 re_map: fclean map
 
 re_vector: fclean vector
+
+re_stack: fclean stack
 
 .PHONY: all clean fclean re re_map re_vector

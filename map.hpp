@@ -6,13 +6,13 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 14:02:08 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 16:40:08 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef TREE_H
-# define TREE_H
+#ifndef MAP_H
+# define MAP_H
 
 #include <memory>
 #include <exception>

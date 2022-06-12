@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 14:32:43 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 15:51:41 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ int main()
 	std::cout << std::endl << std::endl;
 	std::cout << "iterators before swap in order: it, new_it: " << it->first << "....." << new_it->first << std::endl;
 	m_swap.swap(m);
-	std::cout << "iterators sfter swap in order: it, new_it: " << it->first << "....." << new_it->first << std::endl;
+	std::cout << "iterators after swap in order: it, new_it: " << it->first << "....." << new_it->first << std::endl;
 	
 	std::cout<<"m, after swap with m_swap: ";
 	new_it = m.begin();

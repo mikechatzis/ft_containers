@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 15:06:11 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 17:20:25 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -516,11 +516,11 @@ namespace ft
 			///////////
 
 			//CAPACITY
-			size_type size(){
+			size_type size() const {
 				return this->size_;
 			}
 
-			size_type capacity(){
+			size_type capacity() const {
 				return this->size_ + this->capacity_;
 			}
 
@@ -550,7 +550,7 @@ namespace ft
 				this->size_ = n;
 			}
 
-			bool empty(){
+			bool empty() const {
 				return !this->arr_ && !this->size_;
 			}
 
