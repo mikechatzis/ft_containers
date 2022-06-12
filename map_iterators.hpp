@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 16:43:01 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 11:41:23 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,19 @@ namespace ft
 {
 	template<typename T1, typename T2> class pair;
 	template<typename Key, typename T, class allocator, class Compare > class tree;
+	template<class Key,class T,class Compare,class Allocator>
+	class map;
 
 	class bidirectional_iterator_tag;
 	class random_access_iterator_tag;
 
-	template <typename T> class map_iterator
+	template <typename T> class map_iterator // : public ft::map<typename T::key_type,typename T::mapped_type,typename T::key_compare,typename T::allocator_type>
 	{
-		public:
+		protected:
 			typename T::BST *p;
+			T const *map;
+		public:
+			typename T::BST::NODE current_node;
 			
 			typedef typename T::BST BST;
 			typedef std::ptrdiff_t difference_type;
@@ -45,24 +50,13 @@ namespace ft
 			typedef T &reference;
 			typedef ft::bidirectional_iterator_tag iterator_category;
 			
-			typename T::BST::NODE current_node;
 
-			map_iterator() : p(NULL), current_node(NULL), map(NULL){
+			map_iterator() : p(NULL), map(NULL), current_node(NULL){
 				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
 				// dummy = al.allocate(1);
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
 			}
-			map_iterator(T *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), map(ptr) {
-				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
-				// dummy = al.allocate(1);
-				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-			}
-			map_iterator(T const *ptr) : p(&(ptr->get_tree())), current_node(&(p->get_root())), map(ptr) {
+			map_iterator(T *ptr) : p(&(ptr->get_tree())), map(ptr), current_node(&(p->get_root())) {
 				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
 				// dummy = al.allocate(1);
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
@@ -72,7 +66,7 @@ namespace ft
 					second = current_node->pair->second;
 				}
 			}
-			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), map(ptr){
+			map_iterator(T const *ptr) : p(&(ptr->get_tree())), map(ptr), current_node(&(p->get_root())) {
 				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
 				// dummy = al.allocate(1);
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
@@ -82,7 +76,7 @@ namespace ft
 					second = current_node->pair->second;
 				}
 			}
-			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), current_node(n), map(ptr){
+			map_iterator(T *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), map(ptr), current_node(n){
 				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
 				// dummy = al.allocate(1);
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
@@ -92,7 +86,17 @@ namespace ft
 					second = current_node->pair->second;
 				}
 			}
-			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second), map(other.map){
+			map_iterator(T const *ptr, typename T::BST::NODE n) : p(&(ptr->get_tree())), map(ptr), current_node(n){
+				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
+				// dummy = al.allocate(1);
+				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>());
+				if (current_node)
+				{
+					first = current_node->pair->first;
+					second = current_node->pair->second;
+				}
+			}
+			map_iterator(const map_iterator &other) : p(other.p), map(other.map), current_node(other.current_node), first(other.first), second(other.second){
 				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
 				// dummy = al.allocate(1);
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>(other.first, other.second));
@@ -115,7 +119,7 @@ namespace ft
 			}
 			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
 				if (!current_node)
-					return *(map->dummy);
+					return *(p->dummy);
 				return *(current_node->pair);
 			}
 			
@@ -200,37 +204,36 @@ namespace ft
 			// 	class Allocator >
 			// 	friend class map;
 
-			// template<class InputIt, class K> friend class reverse_map_iterator;
+			template<class InputIt, class K> friend class reverse_map_iterator;
 			
 			typename BST::key_type first;
 			typename BST::value_type second;
-			private:
-				T const *map;
-			// 	ft::pair<typename T::key_type const, typename T::mapped_type> *dummy;
+			
+			friend bool operator==(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node == rhs.current_node;
+			}
+			friend bool operator!=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node != rhs.current_node;
+			}
+			friend bool operator<(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node < rhs.current_node;
+			}
+			friend bool operator>(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node > rhs.current_node;
+			}
+			friend bool operator>=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node >= rhs.current_node;
+			}
+			friend bool operator<=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node <= rhs.current_node;
+			}
 	};
 
-	template <typename T> bool operator==(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node == rhs.current_node;
-	}
-	template <typename T> bool operator!=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node != rhs.current_node;
-	}
-	template <typename T> bool operator<(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node < rhs.current_node;
-	}
-	template <typename T> bool operator>(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node > rhs.current_node;
-	}
-	template <typename T> bool operator>=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node >= rhs.current_node;
-	}
-	template <typename T> bool operator<=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
-		return lhs.current_node <= rhs.current_node;
-	}
 	
 	template<class InputIt, class T> class reverse_map_iterator {
-		public:
+		private:
 			InputIt it;
+		public:
 
 			typedef InputIt iterator_type;
 			typedef typename InputIt::iterator_category iterator_category;
@@ -256,15 +259,13 @@ namespace ft
 			}
 
 			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*(void) const{
+				if (!it.current_node)
+					return *(it.p->dummy);
 				return *(it.current_node->pair);
 			}
 
-			// template<
-			// 	class Key,
-			// 	class U,
-			// 	class Compare ,
-			// 	class Allocator >
-			// 	friend class map;
+			// template<class U >
+			// 	friend class map_iterator;
 				
 			reverse_map_iterator &operator++(){
 				it--;

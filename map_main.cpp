@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 16:22:47 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 12:50:55 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ int main()
 				mp[2] = 2;
 				mp[3] = 3;
 				mp[4] = 4;
-				mp[5] = 124;
 				mp[5] = 42;
 				mp[6] = 6;
 	
+	ft::map<int, int> dum;
 	ft::map<int, int> m(mp.begin(), mp.end());
 	ft::map<int,int>::iterator it = m.begin();
 	it++;

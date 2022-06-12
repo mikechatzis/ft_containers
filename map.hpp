@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/11 16:43:25 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 12:53:43 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,25 +97,27 @@ namespace ft
 			typedef Key key_type;
 			typedef node<Key, T>* NODE;
 
+			ft::pair<const Key, T> *dummy;
+
 			//CONSTRUCTORS & DESTRUCTOR//
 			tree(const allocator_type &alloc = allocator_type(), const compare_type &comp = compare_type()) : _root(NULL), _node_count(0) {
+				std::allocator<ft::pair<const Key, T> > al;
+				dummy = al.allocate(1);
+				al.construct(dummy, ft::pair<const Key, T>());
 				_Alloc = allocator_type(alloc);
 				this->comp = compare_type(comp);
 			}
-			// tree(tree const &other, const allocator_type &alloc = allocator_type()) {
-			// 	std::allocator< node<Key,T> > al;
-			// 	_Alloc = allocator_type(alloc);
-			// 	if (!_root && other._root)
-			// 	{
-			// 		_root = al.allocate(1);
-			// 		_Alloc.construct(&(_root->pair), ft::pair< Key, T >(other._root->pair->first, other._root->pair->second));
-			// 		other.clone_tree(_root);
-			// 	}
-			// 	_node_count = other._node_count;
-			// }
+			tree(tree const &other) : _root(other._root), _Alloc(other._Alloc) {
+				std::allocator<ft::pair<const Key, T> > al;
+				dummy = al.allocate(1);
+				al.construct(dummy, ft::pair<const Key, T>(other.dummy->first, other.dummy->second));
+			}
 			~tree(){
+				std::allocator<ft::pair<const Key, T> > al;
+				al.destroy(dummy);
 				while(_root)
 					_root = delete_node(_root, _root->pair->first);
+				al.deallocate(dummy,1);
 			}
 			////
 
@@ -434,18 +436,11 @@ template<
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
-				Allocator al;
-				dummy = al.allocate(1);
-				al.construct(dummy, value_type());
 			};
 			template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = Compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
-				_tree->_root = NULL;
-				Allocator al;
-				dummy = al.allocate(1);
-				al.construct(dummy, value_type());
 				InputIt next;
 				while (first != last)
 				{
@@ -465,9 +460,6 @@ template<
 				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
-				Allocator al;
-				dummy = al.allocate(1);
-				al.construct(dummy, value_type(other.dummy->first, other.dummy->second));
 				insert(other.begin(), other.end());
 			}
 			
@@ -475,17 +467,11 @@ template<
 				std::allocator<BST> tree_maker;
 				tree_maker.destroy(_tree);
 				tree_maker.deallocate(_tree, 1);
-				Allocator al;
-				al.destroy(dummy);
-				al.deallocate(dummy, 1);
 			}
 
 			map &operator=(map const & other){
 				clear();
 				insert(other.begin(), other.end());
-				Allocator al;
-				al.destroy(dummy);
-				al.construct(dummy, value_type(other.dummy->first, other.dummy->second));
 			}
 
 			BST &get_tree() const {
@@ -497,14 +483,12 @@ template<
 				return iterator(this, _tree->first());
 			}
 			iterator end(){
-				iterator it(this, _tree->last());
-				it.current_node = NULL;
+				iterator it(this, NULL);
 				return it;
 			}
 
 			const_iterator end() const {
-				iterator it(this, _tree->last());
-				it.current_node = NULL;
+				iterator it(this, NULL);
 				return it;
 			}
 
@@ -516,14 +500,12 @@ template<
 				return reverse_iterator(this, _tree->last());
 			}
 			reverse_iterator rend(){
-				reverse_iterator rev_it(this, _tree->first());
-				rev_it.it.current_node = NULL;
+				reverse_iterator rev_it(this, NULL);
 				return  rev_it;
 			}
 
 			const_reverse_iterator rend() const {
-				reverse_iterator rev_it(this, _tree->first());
-				rev_it.it.current_node = NULL;
+				reverse_iterator rev_it(this, NULL);
 				return  rev_it;
 			}
 
@@ -665,7 +647,7 @@ template<
 				if (n)
 					return iterator(this, n);
 				else
-					return iterator();
+					return iterator(this, NULL);
 				
 			}
 
@@ -674,7 +656,7 @@ template<
 				if (n)
 					return const_iterator(this, n);
 				else
-					return const_iterator();
+					return const_iterator(this, NULL);
 				
 			}
 
@@ -735,6 +717,8 @@ template<
 				return it->second;
 			}
 
+			// template<class InputIt, class K> friend class reverse_map_iterator;
+			// template<class K> friend class map_iterator;
 			mapped_type& operator[] (const key_type& key)
 			{
 				iterator tmp = this->find(key);
@@ -745,7 +729,6 @@ template<
 				return (tmp.current_node->pair->second);
 			}
 
-			value_type *dummy;
 		private:
 			BST *_tree;
 			std::less<key_type> comp;
