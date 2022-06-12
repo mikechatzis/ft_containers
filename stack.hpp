@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 17:16:04 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 19:03:51 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <memory>
 #include <exception>
 #include <stdexcept>
-#include "ft_vector.hpp"
+#include "vector.hpp"
 #include "map.hpp"
 
 namespace ft{
@@ -29,8 +29,8 @@ namespace ft{
 			typedef typename Container::reference reference;
 			typedef typename Container::const_reference const_reference;
 
-			explicit stack( const Container& cont = Container() ) : cont(cont){}
-			stack( const stack& other ) : cont(other.cont) {}
+			explicit stack( const Container& cont = Container() ) : c(cont){}
+			stack( const stack& other ) : c(other.c) {}
 			virtual ~stack(){}
 
 			stack &operator=(stack const &other) {
@@ -39,24 +39,24 @@ namespace ft{
 			}
 
 			bool empty(void) const {
-				return (this->cont.empty());
+				return (this->c.empty());
 			}
 			size_t size(void) const {
-				return (this->cont.size());
+				return (this->c.size());
 			}
 
 			reference top(void) {
-				return (this->cont.back());
+				return (this->c.back());
 			}
 			const_reference top(void) const {
-				return (this->cont.back());
+				return (this->c.back());
 			}
 
 			void push(const_reference val) {
-				this->cont.push_back(val);
+				this->c.push_back(val);
 			}
 			void pop(void) {
-				this->cont.pop_back();
+				this->c.pop_back();
 			}
 
 			template<typename stack_type, typename container_type>
@@ -90,7 +90,7 @@ namespace ft{
 			}
 
 		protected:
-			Container cont;
+			Container c;
 	};
 }
 

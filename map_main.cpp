@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 15:51:54 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 18:56:12 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int main()
 	
 	ft::map<int, int> dum;
 	ft::map<int, int> m(mp.begin(), mp.end());
-	ft::map<int, int> mc(m);
+	ft::map<int, int> mc = m;
 	ft::map<int,int>::iterator itc = mc.begin();
 	std::cout << "testing copy constructor\n";
 	while(itc != mc.end())
