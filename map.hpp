@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 12:53:43 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 13:28:53 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,9 @@ namespace ft
 
 			typedef allocator allocator_type;
 			typedef Compare compare_type;
-			typedef T value_type;
 			typedef Key key_type;
+			typedef T mapped_type;
+			typedef ft::pair<const Key, T> value_type;
 			typedef node<Key, T>* NODE;
 
 			ft::pair<const Key, T> *dummy;
@@ -427,10 +428,10 @@ template<
 			typedef const value_type& const_reference;
 			typedef typename Allocator::pointer pointer;
 			typedef typename Allocator::const_pointer const_pointer;
-			typedef ft::map_iterator<map> iterator;
-			typedef const ft::map_iterator<map> const_iterator;
-			typedef ft::reverse_map_iterator<iterator, map> reverse_iterator;
-			typedef const ft::reverse_map_iterator<iterator, map> const_reverse_iterator;
+			typedef ft::map_iterator<BST> iterator;
+			typedef const ft::map_iterator<BST> const_iterator;
+			typedef ft::reverse_map_iterator<iterator> reverse_iterator;
+			typedef const ft::reverse_map_iterator<iterator> const_reverse_iterator;
 
 			map(const key_compare& comp = key_compare()) : comp(comp){
 				std::allocator<BST> tree_maker;
@@ -480,37 +481,37 @@ template<
 
 			//////ITERATORS////
 			iterator begin(){
-				return iterator(this, _tree->first());
+				return iterator(_tree, _tree->first());
 			}
 			iterator end(){
-				iterator it(this, NULL);
+				iterator it(_tree, NULL);
 				return it;
 			}
 
 			const_iterator end() const {
-				iterator it(this, NULL);
+				iterator it(_tree, NULL);
 				return it;
 			}
 
 			const_iterator begin() const {
-				return const_iterator(this, _tree->first());
+				return const_iterator(_tree, _tree->first());
 			}
 
 			reverse_iterator rbegin(){
-				return reverse_iterator(this, _tree->last());
+				return reverse_iterator(_tree, _tree->last());
 			}
 			reverse_iterator rend(){
-				reverse_iterator rev_it(this, NULL);
+				reverse_iterator rev_it(_tree, NULL);
 				return  rev_it;
 			}
 
 			const_reverse_iterator rend() const {
-				reverse_iterator rev_it(this, NULL);
+				reverse_iterator rev_it(_tree, NULL);
 				return  rev_it;
 			}
 
 			const_reverse_iterator rbegin() const {
-				return const_reverse_iterator(this, _tree->last());
+				return const_reverse_iterator(_tree, _tree->last());
 			}
 			
 			//////Capacity///////
@@ -622,7 +623,7 @@ template<
 				if (!n)
 					return end();
 				else
-					return iterator(this, n);
+					return iterator(_tree, n);
 			}
 
 			const_iterator find( const Key& key ) const {
@@ -630,7 +631,7 @@ template<
 				if (!n)
 					return end();
 				else
-					return const_iterator(this, n);
+					return const_iterator(_tree, n);
 			}
 
 			size_type count( const Key& key ) const {
@@ -645,25 +646,25 @@ template<
 			iterator lower_bound( const Key& key ){
 				typename BST::NODE n = _tree->lower_bound(_tree->_root, key);
 				if (n)
-					return iterator(this, n);
+					return iterator(_tree, n);
 				else
-					return iterator(this, NULL);
+					return iterator(_tree, NULL);
 				
 			}
 
 			const_iterator lower_bound( const Key& key ) const {
 				typename BST::NODE n = _tree->lower_bound(_tree->_root, key);
 				if (n)
-					return const_iterator(this, n);
+					return const_iterator(_tree, n);
 				else
-					return const_iterator(this, NULL);
+					return const_iterator(_tree, NULL);
 				
 			}
 
 			iterator upper_bound( const Key& key ){
 				typename BST::NODE n = _tree->upper_bound(_tree->_root, key);
 				if (n)
-					return iterator(this, n);
+					return iterator(_tree, n);
 				else
 					return iterator();
 			}
@@ -671,7 +672,7 @@ template<
 			const_iterator upper_bound( const Key& key ) const {
 				typename BST::NODE n = _tree->upper_bound(_tree->_root, key);
 				if (n)
-					return const_iterator(this, n);
+					return const_iterator(_tree, n);
 				else
 					return const_iterator();
 			}
