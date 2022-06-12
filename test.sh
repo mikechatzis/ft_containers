@@ -22,6 +22,15 @@ case $SWITCH in
 		# diff vector_a.comp vector_b.comp
 		make -s fclean
 	;;
+	utils)
+		make -s utils
+		$(tput setaf 4)
+		# echo "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
+		# time ./vector > /dev/null; echo "$(tput setaf 10)\n\nSTL TIMES$(tput setaf 4)"; time ./stl_vector > /dev/null
+		./utils
+		# echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n"
+		# diff vector_a.comp vector_b.comp
+		make -s fclean
 	end) 
 		break
 
