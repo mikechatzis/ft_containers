@@ -6,7 +6,7 @@
 #    By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/21 14:41:30 by mchatzip          #+#    #+#              #
-#    Updated: 2022/06/11 12:40:50 by mchatzip         ###   ########.fr        #
+#    Updated: 2022/06/12 14:48:40 by mchatzip         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ all:		$(NAME)
 
 map:	$(MAP_OBJ)
 		$(CC) -g $(CFLAGS) -o map $(MAP_OBJ)
+		$(CC) -g $(CFLAGS) -o stl_map stl_map_main.cpp
 
 vector: $(NAME)
 
@@ -43,11 +44,11 @@ $(NAME):	$(VECTOR_OBJ)
 			$(CC) -g $(CFLAGS) -o $(NAME) $(VECTOR_OBJ)
 
 clean:		
-			$(RM) *.o
-			$(RM) -r containers.dSYM map.dSYM vector.dSYM utils.dSYM
+			$(RM) *.o *.comp
+			$(RM) -r containers.dSYM map.dSYM vector.dSYM utils.dSYM stl_map.dSYM
 
 fclean:		clean
-			$(RM) $(NAME); $(RM) map utils
+			$(RM) $(NAME); $(RM) map utils stl_map
 
 re:		fclean all
 

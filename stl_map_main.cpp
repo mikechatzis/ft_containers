@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_main.cpp                                       :+:      :+:    :+:   */
+/*   stl_map_main.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 14:35:19 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 14:32:43 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ int main()
 	
 	// tr2.testf();
 
-	// ft::map_iterator<ft::tree<int, std::string> > n_it(&tr2);
-	// ft::map_iterator<ft::tree<int, std::string> > n_it2(&tr2);
+	// std::map_iterator<ft::tree<int, std::string> > n_it(&tr2);
+	// std::map_iterator<ft::tree<int, std::string> > n_it2(&tr2);
 
-	// ft::map_iterator<ft::tree<int, std::string> > n_it3(&tr2);
-	// ft::map_iterator<ft::tree<int, std::string> > n_it4(&tr2);
+	// std::map_iterator<ft::tree<int, std::string> > n_it3(&tr2);
+	// std::map_iterator<ft::tree<int, std::string> > n_it4(&tr2);
 	// std::cout << "testing 'last': " << "last value: " << tr2.last()->pair.second << std::endl;
 	// std::cout << "map_iterator increment/decrement testing: " << (n_it).second << (++n_it).second;
 	// n_it++; n_it++;
@@ -51,23 +51,23 @@ int main()
 				mp[5] = 42;
 				mp[6] = 6;
 	
-	ft::map<int, int> dum;
-	ft::map<int, int> m(mp.begin(), mp.end());
-	ft::map<int, int> mc(m);
-	ft::map<int,int>::iterator itc = mc.begin();
+	std::map<int, int> dum;
+	std::map<int, int> m(mp.begin(), mp.end());
+	std::map<int, int> mc(m);
+	std::map<int,int>::iterator itc = mc.begin();
 	std::cout << "testing copy constructor\n";
 	while(itc != mc.end())
 		std::cout << "(" << itc->first << ", " << itc++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
-	ft::map<int,int>::iterator it = m.begin();
+	std::map<int,int>::iterator it = m.begin();
 	it++;
 
 	while(it != m.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl;
 
-	ft::map<int, int> m2(m.begin(), m.end());
-	ft::map<int,int>::iterator it2 = m2.begin();
+	std::map<int, int> m2(m.begin(), m.end());
+	std::map<int,int>::iterator it2 = m2.begin();
 	while(it2 != m2.end())
 		std::cout << it2++->first << " ";
 	std::cout << std::endl;
@@ -90,7 +90,7 @@ int main()
 		std::cout << "begin iterator of empty map is same as end iterator";
 	std::cout << std::endl << std::endl;
 
-	m2.insert(ft::pair<int,int>(1,1));
+	m2.insert(std::make_pair<int,int>(1, 1));
 	it = m2.begin();
 	std::cout<<"m2, inserting at empty map. m2: ";
 	while(it != m2.end())
@@ -125,8 +125,8 @@ int main()
 	std::cout << std::endl;
 	std::cout<< "key specific erase return value: "<<m.erase(3)<<std::endl<<std::endl;
 
-	ft::pair<int, int> p(7,7);
-	ft::pair<ft::map<int,int>::iterator, bool> con = m.insert(p);
+	std::pair<int, int> p(7,7);
+	std::pair<std::map<int,int>::iterator, bool> con = m.insert(p);
 	it = m.begin();
 	std::cout<<"m, after inserting pair: ";
 	while(it != m.end())
@@ -140,7 +140,7 @@ int main()
 	std::cout<< "\ninsert success factor after attemted insertion of existing key: "<< con.second << std::endl << std::endl;
 
 	it = m.begin();
-	ft::map<int,int>::iterator ins = m.insert(++it, ft::pair<int,int>(-2,-2));
+	std::map<int,int>::iterator ins = m.insert(++it, std::pair<int,int>(-2,-2));
 	std::cout << "inserting new value at improper hint position #1: " << ins->first << std::endl;
 	std::cout<<"m, after inserting element (-2, -2), using hint: ";
 	it = m.begin();
@@ -149,14 +149,14 @@ int main()
 		std::cout << std::endl << std::endl;
 	
 	it = m.begin();
-	ins = m.insert(it, ft::pair<int,int>(-1,-1));
+	ins = m.insert(it, std::pair<int,int>(-1,-1));
 	std::cout << "inserting new value at proper hint position: " << ins->first << std::endl;
 	std::cout<<"m, after inserting element (-1, -1), using hint: ";
 	while(it != m.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	ins = m.insert(--it, ft::pair<int,int>(10,10));
+	ins = m.insert(--it, std::pair<int,int>(10,10));
 	std::cout << "inserting new value at proper hint position: " << ins->first << std::endl;
 	std::cout<<"m, after inserting element (-1, -1), using hint: ";
 	it = m.begin();
@@ -164,7 +164,7 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	ins = m.insert(--it, ft::pair<int,int>(0,0));
+	ins = m.insert(--it, std::pair<int,int>(0,0));
 	std::cout << "inserting new value at improper hint position #2: " << ins->first << std::endl;
 	std::cout<<"m, after inserting element (-1, -1), using hint: ";
 	it = m.begin();
@@ -179,8 +179,8 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	ft::map<int,int> m_swap(mp.begin(), mp.end());
-	ft::map<int,int>::iterator new_it = m_swap.begin();
+	std::map<int,int> m_swap(mp.begin(), mp.end());
+	std::map<int,int>::iterator new_it = m_swap.begin();
 	it = m.begin();
 
 	std::cout << "new map 'm_swap' before swap: ";
@@ -203,7 +203,7 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
-	ft::swap(m_swap, m);
+	std::swap(m_swap, m);
 	std::cout<<"m, after ft::swap with m_swap: ";
 	new_it = m.begin();
 	while(new_it != m.end())
@@ -238,7 +238,7 @@ int main()
 		std::cout << "end iterator";
 	std::cout << std::endl << std::endl;
 
-	ft::pair<ft::map<int,int>::iterator, ft::map<int,int>::iterator> pair = m_swap.equal_range(4);
+	std::pair<std::map<int,int>::iterator, std::map<int,int>::iterator> pair = m_swap.equal_range(4);
 	std::pair<std::map<int,int>::iterator, std::map<int,int>::iterator> std_pair = mp.equal_range(4);
 	std::cout << "equal range first, second: " << pair.first->first << ", " <<  pair.second->first << std::endl;
 	std::cout << "std equal range first, second: " << std_pair.first->first << ", " <<  std_pair.second->first;
@@ -265,8 +265,8 @@ int main()
 	std::less<int> cmp = m_swap.key_comp();
 	std::cout << "compare object results: " << cmp(0,1) << std::endl << std::endl;
 
-	ft::map<int,int>::value_compare comp2 = m_swap.value_comp();
-	ft::pair<int,int> pa(1, 42), pb(-1, 42);
+	std::map<int,int>::value_compare comp2 = m_swap.value_comp();
+	std::pair<int,int> pa(1, 42), pb(-1, 42);
 	std::cout << "compare pairs using 'value compare' object results: " << comp2(pa, pb) << std::endl << std::endl;
 
 	std::cout << "testing 'at':\n";
@@ -296,14 +296,14 @@ int main()
 	std::cout << m_swap[2] << " " << m_swap[12] << " " << m_swap[5];
 	std::cout << std::endl << std::endl;
 
-	ft::map<int,int> copy(m_swap);
+	std::map<int,int> copy(m_swap);
 	std::cout << "testing copy constructor, creating a copy. new map 'copy':\n";
 	it = copy.begin();
 	while(it != copy.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
-	ft::map<int,int> copy2 = m_swap;
+	std::map<int,int> copy2 = m_swap;
 	std::cout << "testing '=' operator overload, creating a copy. new map 'copy2':\n";
 	it = copy2.begin();
 	while(it != copy2.end())
@@ -311,7 +311,7 @@ int main()
 	std::cout << std::endl << std::endl;
 
 	std::cout << "testing reverse iterator operations. m_swap reversed is:\n";
-	ft::map<int,int>::reverse_iterator rev_it = m_swap.rbegin();
+	std::map<int,int>::reverse_iterator rev_it = m_swap.rbegin();
 	while(rev_it != m_swap.rend())
 		std::cout << "(" << rev_it->first << ", " << rev_it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
@@ -328,13 +328,13 @@ int main()
 
 	it = m_swap.begin();
 	std::cout << "testing '*' operator of iterator:\n";
-	ft::pair<int, int> star_p = *it;
+	std::pair<int, int> star_p = *it;
 	std::cout << "(" << star_p.first << ", " << star_p.second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
 	rev_it = m_swap.rbegin();
 	std::cout << "testing '*' operator of rev_iterator:\n";
-	ft::pair<int, int> starr_p = *rev_it;
+	std::pair<int, int> starr_p = *rev_it;
 	std::cout << "(" << starr_p.first << ", " << starr_p.second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
@@ -344,15 +344,15 @@ int main()
 	strm[3] = "how";
 	strm[4] = "ya doin?";
 	
-	ft::map<int, std::string> f_strm(strm.begin(), strm.end());
-	ft::map<int, std::string>::iterator sit = f_strm.begin();
+	std::map<int, std::string> f_strm(strm.begin(), strm.end());
+	std::map<int, std::string>::iterator sit = f_strm.begin();
 	std::cout << "testing data types int, string:\n";
 	while(sit != f_strm.end())
 		std::cout << "(" << sit->first << ", " << sit++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
 	std::cout << "testing data types int, string:\ninserting new element\n";
-	f_strm.insert(ft::pair<int, std::string>(-2, "off text"));
+	f_strm.insert(std::pair<int, std::string>(-2, "off text"));
 	sit = f_strm.begin();
 	while(sit != f_strm.end())
 		std::cout << "(" << sit->first << ", " << sit++->second << ")" << " ";
@@ -364,21 +364,21 @@ int main()
 	strstrm["three"] = "how";
 	strstrm["four"] = "ya doin?";
 	
-	ft::map<std::string, std::string> f_strstrm(strstrm.begin(), strstrm.end());
-	ft::map<std::string, std::string>::iterator ssit = f_strstrm.begin();
+	std::map<std::string, std::string> f_strstrm(strstrm.begin(), strstrm.end());
+	std::map<std::string, std::string>::iterator ssit = f_strstrm.begin();
 	std::cout << "testing data types std::string, string:\n";
 	while(ssit != f_strstrm.end())
 		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
 	std::cout << "testing data types std::string, std::string:\ninserting new element\n";
-	f_strstrm.insert(ft::pair<std::string, std::string>("minus one", "off text"));
+	f_strstrm.insert(std::pair<std::string, std::string>("minus one", "off text"));
 	ssit = f_strstrm.begin();
 	while(ssit != f_strstrm.end())
 		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	const ft::map<int,int>::iterator con_it = m.begin();
+	const std::map<int,int>::iterator con_it = m.begin();
 	it = m.begin();
 	if (con_it == it)
 		std::cout << "iterator to const iterator comparison successful\n";

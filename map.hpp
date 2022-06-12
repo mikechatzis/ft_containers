@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 13:59:49 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 14:02:08 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -482,12 +482,7 @@ template<
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
 				insert(other.begin(), other.end());
-				insert(other.begin(), other.end());
 				return *this;
-			}
-
-			BST &get_tree() const {
-				return *_tree;
 			}
 
 			//////ITERATORS////

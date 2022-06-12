@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 13:36:10 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/12 14:24:48 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ namespace ft
 			}
 			map_iterator operator++(int dummy){
 				(void)dummy;
-				map_iterator<T> copy(*this);
+				map_iterator<T> copy = *this;
 				typename T::NODE root = &p->get_root();
 				typename T::NODE suc = NULL;
 				p->next(root, suc, current_node);
@@ -148,7 +148,7 @@ namespace ft
 			}
 			map_iterator operator--(int dummy){
 				(void)dummy;
-				map_iterator<T> copy(*this);
+				map_iterator<T> copy = *this;
 				if (!this->current_node)
 				{
 					current_node = p->last();
