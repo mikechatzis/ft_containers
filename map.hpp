@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 16:40:08 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/14 21:33:53 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,8 @@ namespace ft
 				this->comp = compare_type(comp);
 			}
 			tree(tree const &other) : _root(other._root), _Alloc(other._Alloc) {
-				std::allocator<ft::pair<const Key, T> > al;
-				dummy = al.allocate(1);
-				al.construct(dummy, ft::pair<const Key, T>(other.dummy->first, other.dummy->second));
+				dummy = _Alloc.allocate(1);
+				_Alloc.construct(dummy, ft::pair<const Key, T>(other.dummy->first, other.dummy->second));
 			}
 			~tree(){
 				std::allocator<ft::pair<const Key, T> > al;
@@ -135,32 +134,33 @@ namespace ft
 				return _node_count;
 			}
 
-			const NODE clone_node_noLR(const NODE n) const {
+			 NODE clone_node_noLR(const NODE n) {
 				if (!n)
 					return NULL;
-				std::allocator<ft::pair<const Key, T> > newp;
 				std::allocator<node<Key, T> > tmp_all;
 				NODE ret = tmp_all.allocate(1);
-				newp.construct(&(ret->pair), ft::pair<Key, T>(n->pair->first, n->pair->second));
+				tmp_all.construct(ret, node<Key,T>());
+				_Alloc.construct(ret->pair, ft::pair<Key, T>(n->pair->first, n->pair->second));
 				n->right = n->left = NULL;
 				return ret;
 			}
-
-			void clone_tree(node<Key, T> *root) const {
-				static NODE tmp = _root;
-				if (root)
-				{
-					NODE newleft = clone_node_noLR(tmp->left);
-					root->left = newleft;
-					tmp = tmp->left;
-					clone_tree(root->left);
-					
-					NODE newright = clone_node_noLR(tmp->right);
-					root->right = newright;
-					tmp = tmp->right;
-					clone_tree(root->right);
-				}
+			
+			NODE clone_tree( NODE r){
+				if (!r)
+					return NULL;
+				NODE root;
+				std::allocator<node<Key, T> > tmp_all;
+				root = tmp_all.allocate(1);
+				tmp_all.construct(root, node<Key, T>());
+				root->pair = _Alloc.allocate(1);
+				_Alloc.construct(root->pair, ft::pair<Key, T>(r->pair->first, r->pair->second));
+				
+				root->left = clone_tree(r->left);
+				root->right = clone_tree(r->right);
+				
+				return root;
 			}
+
 
 			template<class InputIt> void insert(node<Key, T> *&n, InputIt map_elem){
 				std::allocator<node<Key, T> > tmp_all;
@@ -458,12 +458,10 @@ template<
 				}
 			}
 			map(map const &other) : comp(other.comp) {
-				typedef typename std::remove_reference<decltype(other)>::type::allocator_type all;
-				typedef typename std::remove_reference<decltype(other)>::type::key_compare c;
-				std::allocator<ft::tree<Key, T, all, c> > tree_maker;
+				std::allocator<BST> tree_maker;
 				_tree = tree_maker.allocate(1);
 				tree_maker.construct(_tree, BST());
-				insert(other.begin(), other.end());
+				_tree->_root = other._tree->clone_tree(other._tree->_root);
 			}
 			
 			~map(){
@@ -473,15 +471,10 @@ template<
 			}
 
 			map &operator=(map const & other){
-				typedef typename std::remove_reference<decltype(other)>::type::allocator_type all;
-				typedef typename std::remove_reference<decltype(other)>::type::key_compare c;
 				std::allocator<BST> tree_crusher;
 				tree_crusher.destroy(_tree);
-				tree_crusher.deallocate(_tree, 1);
-				std::allocator<ft::tree<Key, T, all, c> > tree_maker;
-				_tree = tree_maker.allocate(1);
-				tree_maker.construct(_tree, BST());
-				insert(other.begin(), other.end());
+				tree_crusher.construct(_tree, BST());
+				_tree->_root = other._tree->clone_tree(other._tree->_root);
 				return *this;
 			}
 

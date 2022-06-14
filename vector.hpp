@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 19:22:40 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/14 18:45:00 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,7 +284,7 @@ reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator=(
         this->it = rhs.it;
     }
     return (*this);
-};
+}
 
 template <class Iterator>
 typename reverse_vector_iterator<Iterator>::reference reverse_vector_iterator<Iterator>::operator*() const
@@ -438,6 +438,8 @@ namespace ft
 			typedef reverse_vector_iterator<iterator> reverse_iterator;
 			typedef reverse_vector_iterator<const_iterator> const_reverse_iterator;
 			typedef T &reference;
+			typedef T* pointer;
+			typedef const T* const_pointer;
 			typedef std::allocator<T> allocator_type;
 			typedef const T &const_reference;
 			typedef std::ptrdiff_t difference_type;
@@ -489,7 +491,7 @@ namespace ft
 				}
 				for (size_t i = 0; i < this->size_; i++)
 					std::cout << this->arr_[i] << " ";
-				std::cout << std::endl;
+				std::cout << std::endl << std::endl;
 			}
 			/////
 
@@ -527,25 +529,25 @@ namespace ft
 			void resize (size_type n, value_type val = value_type()){
 				if (n < this->size_)
 				{
-					T tmp[n];
+					T *tmp = Alloc_.allocate(n);
 					for (size_t i = 0; i < n; i++)
-						tmp[i] = this->arr_[i];
+						this->Alloc_.construct(&tmp[i], arr_[i]);
+					for (size_t i = 0; i < this->size_; i++)
+						this->Alloc_.destroy(&arr_[i]);
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-					this->arr_ = this->Alloc_.allocate(n);
-					for (size_t i = 0; i < n; i++)
-						this->Alloc_.construct(&arr_[i], tmp[i]);
+					this->arr_ = tmp;
 				}
 				else if (n > this->size_)
 				{
-					T tmp[n];
+					T *tmp = Alloc_.allocate(n);
 					for (size_t i = 0; i < this->size_; i++)
-						tmp[i] = this->arr_[i];
+						this->Alloc_.construct(&tmp[i], arr_[i]);
 					for (size_t i = this->size_; i < n; i++)
-						tmp[i] = val;
+						this->Alloc_.construct(&tmp[i], val);
+					for (size_t i = 0; i < this->size_; i++)
+						this->Alloc_.destroy(&arr_[i]);
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-					this->arr_ = this->Alloc_.allocate(n);
-					for (size_t i = 0; i < n; i++)
-						this->Alloc_.construct(&arr_[i], tmp[i]);
+					this->arr_ = tmp;
 				}
 				this->size_ = n;
 			}
@@ -565,13 +567,13 @@ namespace ft
 				if (this->capacity() >= n)
 					return;
 
-				T tmp[this->size_];
+				T *tmp = Alloc_.allocate(n);
 				for (size_t i = 0; i < this->size_; i++)
-					tmp[i] = this->arr_[i];
+					this->Alloc_.construct(&tmp[i], arr_[i]);
+				for (size_t i = 0; i < this->size_; i++)
+						this->Alloc_.destroy(&arr_[i]);
 				this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-				this->arr_ = this->Alloc_.allocate(n);
-				for (size_t i = 0; i < this->size_; i++)
-					this->Alloc_.construct(&arr_[i], tmp[i]);
+				this->arr_ = tmp;
 				this->capacity_ = n - this->size_;
 			}
 
@@ -647,43 +649,37 @@ namespace ft
 			}
 
 			iterator erase (iterator position){
-				T tmp[this->size_];
-				size_t retpos;
-				size_t j = 0;
-				for (iterator i = this->begin(); i != this->end(); i++)
+				pointer p_pos = &(*position);
+				if (position + 1 == end())
+					Alloc_.destroy(&(*position));
+				else
 				{
-					if (i == position)
-						retpos = j; 
-					else
-						tmp[j++] = *i;
+					while (position != end())
+					{
+						Alloc_.construct(&(*position), *(position + 1));
+						Alloc_.destroy(&(*(position + 1)));
+						position++;
+					}
 				}
-				this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-				this->arr_ = this->Alloc_.allocate(j);
-				for (size_t i = 0; i < j; i++)
-					this->Alloc_.construct(&arr_[i], tmp[i]);
-				this->size_ = j;
-				return iterator(&this->arr_[retpos]);
+				size_ -= 1;
+				return (iterator(p_pos));
 			}
 			iterator erase (iterator first, iterator last){
-				T tmp[this->size_];
-				size_t retpos;
-				size_t j = 0;
-				for (iterator i = this->begin(); i != this->end(); i++)
+				pointer p_first = &(*first);
+				size_type dist = 0;
+				for (; &(*first) != &(*last); first++)
 				{
-					if (i == first)
-					{
-						retpos = j;
-						i = last - 1;
-					}
-					else
-						tmp[j++] = *i;
+					Alloc_.destroy(&(*first));
+					dist++;
 				}
-				this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-				this->arr_ = this->Alloc_.allocate(j);
-				for (size_t i = 0; i < j; i++)
-					this->Alloc_.construct(&arr_[i], tmp[i]);
-				this->size_ = j;
-				return iterator(&this->arr_[retpos]);
+				for (iterator i = iterator(p_first); last != end(); last++)
+				{
+					Alloc_.construct(&(*i), *last);
+					Alloc_.destroy(&(*last));
+					i++;
+				}
+				size_ -= dist;
+				return (iterator(p_first));
 			}
 			
 			void swap (vector& x){
@@ -704,7 +700,7 @@ namespace ft
 
 			void assign (size_type n, const value_type& val){
 				if (!this->arr_)
-					this->arr_ = this->arr_ = this->Alloc_.allocate(n);
+					this->arr_ = this->Alloc_.allocate(n);
 				if (n <= this->capacity())
 				{
 					for (size_t i = 0; i < this->size_; i++)
@@ -754,8 +750,14 @@ namespace ft
 			}
 
 			iterator insert (iterator position, const value_type& val){
-				if (!this->arr_)
-					this->arr_ = this->arr_ = this->Alloc_.allocate(this->size_ + 1);
+				if (!this->arr_){
+					this->arr_ = this->Alloc_.allocate(2);
+					Alloc_.construct(&arr_[0], val);
+					size_ = 1;
+					capacity_ = 1;
+					return iterator(&arr_[0]);
+				}
+
 				if (this->size_ + 1 <= this->capacity())
 				{
 					for (iterator i = this->end(); i != position; i--)
@@ -770,39 +772,36 @@ namespace ft
 				else
 				{
 					size_t pos = 0;
-					T tmp[this->size_ + 1];
+					T *tmp = Alloc_.allocate(size_ * 2);
 					size_t j = 0;
-					for (iterator i = this->begin(); i != this->end(); i++)
-					{
-						if (i != position)
-							tmp[j] = *i;
-						else
-						{
-							pos = j;
-							tmp[j++] = val;
-							tmp[j] = *i;
-						}
-						j++;
-					}
-					if (position == this->end())
-					{
-						pos = j;
-						tmp[j] = val;
-					}
+					for (iterator i = this->begin(); i != position; i++)
+							Alloc_.construct(&tmp[j++], *i);
+
+					pos = j;
+					Alloc_.construct(&tmp[j++], val);
+
+					for (iterator i = position; i != end(); i++)
+						Alloc_.construct(&tmp[j++], *i);
+
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-					this->arr_ = this->Alloc_.allocate(this->size_ + 1);
-					for (size_t i = 0; i < this->size_ + 1; i++)
-						this->Alloc_.construct(&this->arr_[i], tmp[i]);
-					this->capacity_ = 0;
+					arr_ = tmp;
+					this->capacity_ = size_ * 2 - size_ - 1;
 					this->size_++;
 					return iterator(&this->arr_[pos]);
-				}
+				} 
 				return iterator(&*(position));
 			}
 
 			void insert (iterator position, size_type n, const value_type& val){
-				if (!this->arr_)
-					this->arr_ = this->arr_ = this->Alloc_.allocate(this->size_ + n);
+				if (!this->arr_){
+					this->arr_ = this->Alloc_.allocate(n * 2);
+					for (size_t i = 0; i < n; i++)
+						Alloc_.construct(&arr_[i], val);
+					capacity_ = 2*n - n;
+					size_ += n;
+					return;
+				}
+
 				if (this->size_ + n <= this->capacity())
 				{
 					for (iterator i = this->end(); i != position; i--)
@@ -817,30 +816,27 @@ namespace ft
 				}
 				else
 				{
-					T tmp[this->size_ + n];
+					T *tmp;
+					size_t multi = 1;
+					for (; n > multi*size_ ; multi++)
+						continue;
+					tmp = Alloc_.allocate(size_ * multi);
+					
 					size_t j = 0;
-					for (iterator i = this->begin(); i != this->end(); i++)
-					{
-						if (i != position)
-							tmp[j] = *i;
-						else
-						{
-							for (size_t i = 0; i < n; i++)
-								tmp[j++] = val;
-							tmp[j] = *i;
-						}
-						j++;
-					}
-					if (position == this->end())
-						for (size_t i = 0; i < n; i++)
-								tmp[j++] = val;
+					for (iterator i = this->begin(); i != position; i++)
+							Alloc_.construct(&tmp[j++], *i);
+
+					for (size_t i = 0; i < n; i++)
+						Alloc_.construct(&tmp[j++], val);
+
+					for (iterator i = position; i != end(); i++)
+						Alloc_.construct(&tmp[j++], *i);
+
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-					this->arr_ = this->Alloc_.allocate(this->size_ + n);
-					for (size_t i = 0; i < this->size_ + n; i++)
-						this->Alloc_.construct(&this->arr_[i], tmp[i]);
-					this->capacity_ = 0;
+					arr_ = tmp;
+					capacity_ = size_ * multi - size_ - n;
 					this->size_ += n;
-				}
+				} 
 			}
 
 			template <class InputIterator>
@@ -848,8 +844,14 @@ namespace ft
 				size_t j = 0;
 				for (InputIterator i = first; i != last; i++)
 					j++;
-				if (!this->arr_)
-					this->arr_ = this->arr_ = this->Alloc_.allocate(this->size_ + j);
+				if (!this->arr_){
+					this->arr_ = this->Alloc_.allocate(2 * j);
+					for (size_t i = 0; first != last; first++)
+						Alloc_.construct(&arr_[i++], *first);
+					size_ = j;
+					capacity_ = 2 * j - j;
+					return;
+				}
 				if (this->size_ + j <= this->capacity())
 				{
 					for (iterator i = this->end(); i != position; i--)
@@ -864,29 +866,31 @@ namespace ft
 				}
 				else
 				{
-					T tmp[this->size_ + j];
-					size_t k = 0;
-					for (iterator i = this->begin(); i != this->end(); i++)
-					{
-						if (i != position)
-							tmp[k] = *i;
-						else
-						{
-							for (size_t i = 0; i < j; i++)
-								tmp[k++] = *first++;
-							tmp[k] = *i;
-						}
-						k++;
+					T *tmp;
+					size_t t_c;
+					if (j > size_){
+						t_c = size_ * 4 - size_;
+						tmp = Alloc_.allocate(size_ * 4);	
 					}
-					if (position == this->end())
-						for (size_t i = 0; i < j; i++)
-								tmp[k++] = *first++;
+					else{
+						t_c = size_ * 2 - size_;
+						tmp = Alloc_.allocate(size_ * 2);	
+					}
+					
+					size_t d = 0;
+					for (iterator i = this->begin(); i != position; i++)
+							Alloc_.construct(&tmp[d++], *i);
+
+					for (; first != last; first++)
+						Alloc_.construct(&tmp[d++], *first);
+
+					for (iterator i = position; i != end(); i++)
+						Alloc_.construct(&tmp[d++], *i);
+
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
-					this->arr_ = this->Alloc_.allocate(this->size_ + j + 1);
-					for (size_t i = 0; i < this->size_ + j; i++)
-						this->Alloc_.construct(&this->arr_[i], tmp[i]);
-					this->capacity_ = 0;
+					arr_ = tmp;
 					this->size_ += j;
+					capacity_ = t_c - j;
 				}
 			}
 
@@ -908,6 +912,57 @@ namespace ft
 			size_type capacity_;
 			allocator_type Alloc_;
 	};
+
+	template <class T, class Alloc>
+		bool operator== (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs)
+		{
+			if (lhs.size() != rhs.size())
+				return (false);
+			typename ft::vector<T>::const_iterator first1 = lhs.begin();
+			typename ft::vector<T>::const_iterator first2 = rhs.begin();
+			while (first1 != lhs.end())
+			{
+				if (first2 == rhs.end() || *first1 != *first2)
+					return (false);
+				++first1;
+				++first2;
+			}
+			return (true);
+		}
+
+	template <class T, class Alloc>
+		bool operator!= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+		{
+			return (!(lhs == rhs));
+		}
+	
+
+	template <class T, class Alloc>
+		bool operator<  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+		{
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		}
+
+
+	template <class T, class Alloc>
+		bool operator<= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+		{
+			return (!(rhs < lhs));
+		}
+
+	
+	template <class T, class Alloc>
+		bool operator>  (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+		{
+			return (rhs < lhs);
+		}
+
+	
+	template <class T, class Alloc>
+		bool operator>= (const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+		{
+			return (!(lhs < rhs));
+		}
 
 	template <typename T>
 	void swap(ft::vector<T> &x, ft::vector<T> &y)

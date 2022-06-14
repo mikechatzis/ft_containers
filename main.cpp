@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <deque>
-#if !1 //CREATE A REAL STL EXAMPLE
+#if 1 //CREATE A REAL STL EXAMPLE
 	#include <map>
 	#include <stack>
 	#include <vector>
@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#define MAX_RAM 8368709
+#define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096
 struct Buffer
 {
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 	std::cout << "should be constant with the same seed: " << sum << std::endl;
 
 	
-	// ft::map<int, int> copy = map_int;
+	ft::map<int, int> copy = map_int;
 	// ft::map<int,int>::iterator itc = map_int.begin();
 	// std::cout << "contents of map\n";
 	// while(itc != map_int.end())

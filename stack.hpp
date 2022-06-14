@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 19:03:51 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/14 21:40:21 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,38 +61,37 @@ namespace ft{
 
 			template<typename stack_type, typename container_type>
 			friend bool operator==(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.cont == rhs.cont);
+				return (lhs.c == rhs.c);
 			}
 
 			template<typename stack_type, typename container_type>
 			friend bool operator!=(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.cont != rhs.cont);
+				return (lhs.c != rhs.c);
 			}
 
 			template<typename stack_type, typename container_type>
 			friend bool operator<(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.cont < rhs.cont);
+				return (lhs.c < rhs.c);
 			}
 
 			template<typename stack_type, typename container_type>
 			friend bool operator<=(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.container <= rhs.container);
+				return (lhs.c <= rhs.c);
 			}
 
 			template<typename stack_type, typename container_type>
 			friend bool operator>(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.cont > rhs.cont);
+				return (lhs.c > rhs.c);
 			}
 
 			template<typename stack_type, typename container_type>
 			friend bool operator>=(stack<stack_type, container_type> const &lhs, stack<stack_type, container_type> const &rhs) {
-				return (lhs.cont >= rhs.cont);
+				return (lhs.c >= rhs.c);
 			}
 
 		protected:
 			Container c;
 	};
 }
-
 
 #endif

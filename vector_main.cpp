@@ -6,12 +6,11 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/12 17:45:36 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/14 21:38:31 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.hpp"
-#include <array>
 #include <vector>
 
 int main()
@@ -24,9 +23,9 @@ int main()
 	delete v2;
 	v2_copy.print();
 
-	std::array<int, 42> a;
+	std::vector<int> a;
 	for (int i = 0; i<42; i++)
-		a[i] = i + 1;
+		a.push_back(i + 1);
 
 	ft::vector<int> v3(a.begin(), a.end());
 	v3.print(); std::cout << "v3 size is: " << v3.size() << std::endl;
@@ -71,14 +70,18 @@ int main()
 	std::cout << "test \"rend\": std::vector libv: " << *libv.rend() << std::endl;
 
 	ft::vector<int> v3_reverse(v3.rbegin(), v3.rend());
-	std::cout << "v3 reversed is: "; v3_reverse.print(); std::cout << "with size = " << v3_reverse.size() << std::endl;
+	std::cout << "v3 reversed is: "; v3_reverse.print(); std::cout << "with size = " << v3_reverse.size() << std::endl<< std::endl;
 
 	ft::vector<int> v5(a.begin(), a.end()); ft::vector<int>::iterator e = v5.erase(v5.end() - 2);
+	// std::vector<int> std_v5(a.begin(), a.end());
+	// std_v5.erase(std_v5.begin() + 1, std_v5.end() -2);
+	// for (std::vector<int>::iterator i = std_v5.begin(); i != std_v5.end(); i++)
+	// 	std::cout << *i << " ";
 	std::cout << "erase(position) used on v5. v5 size: " << v5.size()<< "| iterator returned by erase points to: " << *e << " | "; v5.print();
 	e = v5.erase(v5.begin() + 1, v5.end() -2);
 	std::cout << "erase(range) used on v5. v5 size: " << v5.size()<< "| iterator returned by erase points to: " << *e << " | "; v5.print();
 
-	ft::vector<float> v4(2, (long)2); //v4.clear();
+	ft::vector<float> v4(2, 2); //v4.clear();
  	v4.print();
 	std::cout << "v4 is clear if a new line follows: " << v4.at(0)<< " v4 size: " << v4.size() << std::endl;
 
@@ -99,6 +102,9 @@ int main()
 
 	 e= v5.insert(v5.begin() + 12, 128);
 	std::cout << "inserted new value '128' to v5. v5 not enough capacity. New v5 size: " << v5.size() << ":" << v5.capacity() << ", insert iterator points to: " << *e << " | "; v5.print();
+	e = v5.insert(v5.end(), 4242);
+	std::cout << "inserted new value '4242' to v5 end. v5 enough capacity. New v5 size: " << v5.size() << ":" << v5.capacity() << ", insert iterator points to: " << *e << " | "; v5.print();
+	
 	v5 = v3;
 	v5.reserve(10);
 	e = v5.insert(v5.end(), 128);
@@ -111,7 +117,8 @@ int main()
 	v6.clear();
 	v6.assign(10, 10);
 	v6.insert(v6.end(), 4, 42);
-		std::cout << "inserted new values 2 x '66' to v6. v6 does not have enough capacity. New v6 size: "<< v6.size() << ":" << v6.capacity() << " | "; v6.print();
+		std::cout << "inserted new values 4 x '42' to v6. v6 does not have enough capacity. New v6 size: "<< v6.size() << ":" << v6.capacity() << " | "; v6.print();
+	
 	v6.clear();
 	v6.assign(10, 10);
 	v6.reserve(62);
@@ -138,4 +145,5 @@ int main()
 
 	ft::swap(v5, v6);
 	std::cout << "used non member 'swap' on v5 and v6. New v5: "  << v5.size() << ":" << v5.capacity() << " | "; v5.print(); std::cout << "New v6: "  << v6.size() << ":" << v6.capacity() << " | "; v6.print();
+	
 }

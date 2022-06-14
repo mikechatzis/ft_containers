@@ -43,6 +43,16 @@ case $SWITCH in
 		diff stack_a.comp stack_b.comp
 		make -s fclean
 	;;
+	performance)
+		clear
+		g++ -o stl main.cpp ; g++ -o mine main2.cpp
+		echo  "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
+		time ./mine 21
+		echo "$(tput setaf 10)\nSTL TIMES$(tput setaf 4)";
+		time ./stl 21
+		rm -rf mine stl
+		make -s fclean
+	;;
 	end) 
 		break
 
