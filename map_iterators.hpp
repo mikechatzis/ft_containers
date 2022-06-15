@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/14 18:57:10 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/15 19:20:42 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,8 @@ namespace ft
 
 	template <typename T> class map_iterator // : public ft::map<typename T::key_type,typename T::mapped_type,typename T::key_compare,typename T::allocator_type>
 	{
-		protected:
-			T *p;
 		public:
+			T *p;
 			typename T::NODE current_node;
 
 			typedef T object_type;
@@ -94,6 +93,7 @@ namespace ft
 				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>(other.first, other.second));
 				return *this;
 			}
+			
 			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
 				if (!current_node)
 					return *(p->dummy);
@@ -173,7 +173,10 @@ namespace ft
 			map_iterator<T> *operator->(){
 				return this;
 			}
-			
+			const map_iterator<T> *operator->() const{
+				return this;
+			}
+
 			// template<
 			// 	class Key,
 			// 	class U,
@@ -181,7 +184,7 @@ namespace ft
 			// 	class Allocator >
 			// 	friend class map;
 
-			template<class InputIt> friend class reverse_map_iterator;
+			// template<class InputIt> friend class reverse_map_iterator;
 			
 			typename T::key_type first;
 			typename T::mapped_type second;

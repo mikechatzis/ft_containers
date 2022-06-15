@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/14 18:57:38 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/15 18:52:39 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -378,7 +378,7 @@ int main()
 		std::cout << "(" << ssit->first << ", " << ssit++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 	
-	const ft::map<int,int>::iterator con_it = m.begin();
+	ft::map<int,int>::const_iterator con_it = m.begin();
 	it = m.begin();
 	if (con_it == it)
 		std::cout << "iterator to const iterator comparison successful\n";
@@ -386,6 +386,14 @@ int main()
 	mc = m;
 	it = mc.begin();
 	std::cout << "testing '=' operator, copied m:\n";
+	while(it != mc.end())
+		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
+	std::cout << std::endl << std::endl;
+
+	ft::map<int,int>::const_iterator con_it2 = m.begin();
+	it->first = 13;
+	it = mc.begin();
+	std::cout << "testing reassigning, m:\n";
 	while(it != mc.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
