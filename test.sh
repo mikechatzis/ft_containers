@@ -2,7 +2,7 @@
 
 clear
 echo "$(tput setaf 2)$(tput bold)Welcome to the ft_containers test script\n\nTo test the project, please choose from \
-'vector', 'map', 'stack', 'utils', 'performance', or 'help'\n\n"
+'vector', 'map', 'stack', 'utils' (precede with view_ to view test info), 'performance', or 'help'\n\n"
 
 echo "$(tput setaf 3)$(tput bold)Do you want the test output to be printed to the terminal? (y/n): $(tput setaf 0)$(tput sgr0)\c"
 read OUT
