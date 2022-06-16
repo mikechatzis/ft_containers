@@ -1,60 +1,99 @@
 #bin/zsh
 
-while :
-do
-  read SWITCH
+clear
+echo "$(tput setaf 2)$(tput bold)Welcome to the ft_containers test script\n\nTo test the project, please choose from \
+'vector', 'map', 'stack', 'utils', 'performance', or 'help'\n\n"
 
-case $SWITCH in
-	map)
-		clear
-		make -s map
-		echo  "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
-		time leaks --atExit -- ./map > map_a.comp; echo "$(tput setaf 10)\nSTL TIMES$(tput setaf 4)"; time leaks --atExit -- ./stl_map > map_b.comp
-		echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n"
-		diff map_a.comp map_b.comp
-		make -s fclean
-	;;
-	vector)
-		clear
-		make -s vector
-		echo "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
-		time ./vector > /dev/null; echo "$(tput setaf 10)\n\nSTL TIMES$(tput setaf 4)"; time ./stl_vector > /dev/null
-		echo "\n$(tput setaf 10)Leaks$(tput setaf 6)\n"
-		leaks --atExit -- ./vector
-		make -s fclean
-	;;
-	utils)
-		clear
-		make -s utils
-		echo $(tput setaf 3)
-		# echo "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
-		# time ./vector > /dev/null; echo "$(tput setaf 10)\n\nSTL TIMES$(tput setaf 4)"; time ./stl_vector > /dev/null
-		leaks --atExit -- ./utils
-		# echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n"
-		# diff vector_a.comp vector_b.comp
-		make -s fclean
-	;;
-	stack)
-		clear
-		make -s stack
-		echo  "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
-		time leaks --atExit -- ./stack > stack_a.comp; echo "$(tput setaf 10)\nSTL TIMES$(tput setaf 4)"; time leaks --atExit -- ./stl_stack > stack_b.comp
-		echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n"
-		diff stack_a.comp stack_b.comp
-		make -s fclean
-	;;
-	performance)
-		clear
-		g++ -o stl main.cpp ; g++ -o mine main2.cpp
-		echo  "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
-		time ./mine 21
-		echo "$(tput setaf 10)\nSTL TIMES$(tput setaf 4)";
-		time ./stl 21
-		rm -rf mine stl
-		make -s fclean
-	;;
-	end) 
-		break
+echo "$(tput setaf 5)$(tput bold)Do you want the test output to be printed to the terminal? (y/n): $(tput setaf 0)$(tput sgr0)\c"
+read OUT
 
-esac
-done
+	while :
+	do
+	if [ "$OUT" = "y" ] || [ "$OUT" = "n" ]; then
+		echo "$(tput setaf 5)$(tput bold)Please insert command: $(tput setaf 0)$(tput sgr0)\c"
+		read SWITCH
+
+		case $SWITCH in
+			map)
+				clear
+				make -s map
+				leaks --atExit -- ./map > map_a.comp; ./stl_map > map_b.comp
+				echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n" | tee test_log > /dev/null
+				diff map_a.comp map_b.comp | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			vector)
+				clear
+				make -s vector
+				leaks --atExit -- ./vector > vector_a.comp; ./stl_vector > vector_b.comp
+				echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n" | tee test_log > /dev/null
+				diff vector_a.comp vector_b.comp | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			utils)
+				clear
+				make -s utils
+				echo $(tput setaf 3) | tee test_log > /dev/null
+				leaks --atExit -- ./utils | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			stack)
+				clear
+				make -s stack
+				leaks --atExit -- ./stack > stack_a.comp; ./stl_stack > stack_b.comp
+				echo "\n$(tput setaf 10)DIFFERENCES$(tput setaf 6)\n"| tee test_log > /dev/null
+				diff stack_a.comp stack_b.comp| tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)"| tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			performance)
+				clear
+				g++ -o stl main.cpp ; g++ -o mine main2.cpp
+				echo  "$(tput setaf 10)\nMY TIMES$(tput setaf 4)"
+				time ./mine 21
+				echo "$(tput setaf 10)\nSTL TIMES$(tput setaf 4)"
+				time ./stl 21
+				echo "\n$(tput setaf 0)$(tput sgr0)"
+				rm -rf mine stl
+				make -s fclean
+			;;
+			help)
+				echo "$(tput setaf 4)$(tput bold)'map', 'vector', 'stack' & 'utils':\n$(tput sgr0)Executes one binary using the format 'ft::container' and another using 'std::container' and diffs them. Also checks execution time\n"
+				echo "$(tput bold)$(tput setaf 4)'performance':\n$(tput sgr0)Runs the school's provided main twice, with ft:: and std:: namespace respectively, and displays execution times for comparison\n"
+				echo "$(tput bold)$(tput setaf 4)'help':\n$(tput sgr0)Displays this help message$(tput setaf 0)\n"
+				echo "$(tput bold)$(tput setaf 4)'end':\n$(tput sgr0)Exit the script$(tput setaf 0)\n"
+				echo "$(tput setaf 6)This script requires 2 main files per container, one named: '{container_name}_main' and a second named: 'stl_{container_name}_main' \
+				\nThe script uses the included makefile \
+				\nAdditionally the 'main.cpp' file provided by the subject and a copy of it named: 'main2.cpp', which needs to be configured to run the ft::containers, are required$(tput setaf 0)\n"
+				echo "$(tput bold)$(tput setaf 4)'rm':\n$(tput sgr0)Deletes the 'test_log' file$(tput setaf 0)\n"
+			;;
+			end) 
+				break
+			;;
+			rm)
+				if test -f test_log; then
+				rm -rf test_log
+				fi
+			;;
+			*)
+				echo "$(tput setaf 4)$(tput bold)Choose from 'vector', 'map', 'stack', 'utils', or 'performance'\n$(tput setaf 0)$(tput sgr0)"
+			
+		esac
+		if [ "$OUT" = "y" ]; then
+			if test -f test_log; then
+				cat test_log
+				rm -rf test_log
+			fi
+		fi
+	else
+		echo "$(tput setaf 3)$(tput bold)Please type 'y', for yes and 'n', for no: $(tput setaf 0)$(tput sgr0)\c"
+		read OUT
+	fi
+	done
+
+	if test -f test_log; then
+		echo "$(tput setaf 3)Check 'test_log for the results"
+	fi
