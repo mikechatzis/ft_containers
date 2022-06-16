@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 13:13:09 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:10:10 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,17 @@ int main()
 	std::cout << std::endl << std::endl;
 	std::cout << "New v6: "  << v6.size() << ":" << v6.capacity() << " | ";
 	for (std::vector<int>::iterator it = v6.begin(); it != v6.end(); it++)
+		std::cout << *it << " ";
+	std::cout << std::endl << std::endl;
+
+	const std::vector<int> cv(v5);
+	std::vector<int>::const_iterator con_it = cv.begin();
+	// *con_it = 1314;
+	b = v5.begin();
+	if (b == con_it)
+		std::cout << "iterator to const iterator comparison successful\n";
+	std::cout << "\ncv: ";
+	for (std::vector<int>::const_iterator it = cv.begin(); it != cv.end(); it++)
 		std::cout << *it << " ";
 	std::cout << std::endl << std::endl;
 	

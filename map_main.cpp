@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 09:51:30 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:18:44 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,8 +391,8 @@ int main()
 	std::cout << std::endl << std::endl;
 
 	ft::map<int,int>::const_iterator con_it2 = m.begin();
+	// con_it->second = 13;
 	it->second = 13;
-	// con_it->second = 12;
 	it = mc.begin();
 	std::cout << "testing reassigning, m:\n";
 	while(it != mc.end())

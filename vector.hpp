@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 13:33:03 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:07:04 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,19 @@ bool operator<(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
 }
 
 template <typename T>
+bool operator<(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
+{
+    return lhs.p < rhs.p;
+}
+
+template <typename T>
 bool operator<=(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
+{
+    return lhs.p <= rhs.p;
+}
+
+template <typename T>
+bool operator<=(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
 {
     return lhs.p <= rhs.p;
 }
@@ -186,8 +198,21 @@ bool operator>(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
 {
     return lhs.p > rhs.p;
 }
+
+template <typename T>
+bool operator>(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
+{
+    return lhs.p > rhs.p;
+}
+
 template <typename T>
 bool operator>=(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
+{
+    return lhs.p >= rhs.p;
+}
+
+template <typename T>
+bool operator>=(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
 {
     return lhs.p >= rhs.p;
 }
@@ -199,7 +224,19 @@ bool operator==(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
 }
 
 template <typename T>
+bool operator==(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
+{
+    return lhs.p == rhs.p;
+}
+
+template <typename T>
 bool operator!=(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
+{
+    return lhs.p != rhs.p;
+}
+
+template <typename T>
+bool operator!=(const vector_iterator<T> &lhs, const vector_iterator<const T> &rhs)
 {
     return lhs.p != rhs.p;
 }

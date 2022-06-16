@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 09:45:36 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:44:45 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,9 +403,9 @@ template<
 			typedef typename Allocator::pointer pointer;
 			typedef typename Allocator::const_pointer const_pointer;
 			typedef ft::map_iterator<BST> iterator;
-			typedef const ft::map_iterator<BST> const_iterator;
+			typedef ft::map_iterator<BST> const_iterator;
 			typedef ft::reverse_map_iterator<iterator> reverse_iterator;
-			typedef const ft::reverse_map_iterator<iterator> const_reverse_iterator;
+			typedef ft::reverse_map_iterator<iterator> const_reverse_iterator;
 
 			map(const key_compare& comp = key_compare()) : comp(comp){
 				std::allocator<BST> tree_maker;

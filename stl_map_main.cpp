@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/15 19:24:39 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 16:36:07 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,7 +390,9 @@ int main()
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";
 	std::cout << std::endl << std::endl;
 
-	// std::map<int,int>::const_iterator con_it2 = m.begin();
+	std::map<int,int>::const_iterator con_it2 = m.begin();
+	con_it2++;
+	// con_it2->second = 13;
 	it->second = 13;
 	it = mc.begin();
 	std::cout << "testing reassigning, m:\n";

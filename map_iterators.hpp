@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 09:46:23 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:40:03 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,115 @@ namespace ft
 				return lhs.current_node >= rhs.current_node;
 			}
 			friend bool operator<=(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
+				return lhs.current_node <= rhs.current_node;
+			}
+	};
+
+	template <typename T> class const_map_iterator{
+		public:
+			T *p;
+			typename T::NODE current_node;
+
+			typedef T object_type;
+			typedef std::ptrdiff_t difference_type;
+			typedef typename T::value_type value_type;
+			typedef typename T::value_type& reference;
+			typedef const typename T::value_type& const_reference;
+			typedef typename std::allocator<value_type>::pointer pointer;
+			typedef typename std::allocator<value_type>::const_pointer const_pointer;
+			typedef ft::bidirectional_iterator_tag iterator_category;
+			
+
+			const_map_iterator() : p(NULL), current_node(NULL){}
+			const_map_iterator(T *ptr) : p(ptr), current_node(&(p->get_root())) {	}
+			const_map_iterator(T const *ptr) : p(ptr), current_node(&(p->get_root())) {}
+			const_map_iterator(T *ptr, typename T::NODE n) : p(ptr), current_node(n){}
+			const_map_iterator(T const *ptr, typename T::NODE n) : p(ptr), current_node(n){}
+			const_map_iterator(const const_map_iterator &other) : p(other.p), current_node(other.current_node){}
+			~const_map_iterator(){};
+			
+			const_map_iterator &operator=(const const_map_iterator &other){
+				p = other.p;
+				current_node = other.current_node;
+				return *this;
+			}
+			
+			const ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
+				if (!current_node)
+					return *(p->dummy);
+				return *(current_node->pair);
+			}
+			
+			const_map_iterator &operator++(){
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
+				return *this;
+			}
+			const_map_iterator &operator--(){
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
+				return *this;
+			}
+			const_map_iterator operator++(int dummy){
+				(void)dummy;
+				const_map_iterator<T> copy = *this;
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
+				return copy;
+			}
+			const_map_iterator operator--(int dummy){
+				(void)dummy;
+				const_map_iterator<T> copy = *this;
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
+				return copy;
+			}
+
+
+			typename T::value_type *operator->(){
+				if (!current_node)
+					return p->dummy;
+				return current_node->pair;
+			}
+			const typename T::value_type *operator->() const{
+				if (!current_node)
+					return p->dummy;
+				return current_node->pair;
+			}
+			
+			
+			friend bool operator==(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
+				return lhs.current_node == rhs.current_node;
+			}
+			friend bool operator!=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
+				return lhs.current_node != rhs.current_node;
+			}
+			friend bool operator<(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
+				return lhs.current_node < rhs.current_node;
+			}
+			friend bool operator>(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
+				return lhs.current_node > rhs.current_node;
+			}
+			friend bool operator>=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
+				return lhs.current_node >= rhs.current_node;
+			}
+			friend bool operator<=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
 				return lhs.current_node <= rhs.current_node;
 			}
 	};
