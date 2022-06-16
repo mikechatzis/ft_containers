@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/15 18:53:50 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 09:44:04 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,24 +219,10 @@ namespace ft
 				n->pair = _Alloc.allocate(1);
 				_Alloc.construct(n->pair, map_elem);
 				n->right = n->left = NULL;
-				// std::cout << "creation "<< n->pair->first << std::endl;
 				this->_node_count += 1;
 				return n;
 			}
-
-			// void testf(){
-			// 	std::map<int, std::string> m;
-			// 	m[2] = "two";
-			// 	m[3] = "three";
-			// 	m[4] = "four";
-
-			// 	std::map<int, std::string>::iterator it = m.begin();
-			// 	insert(_root, it);
-			// 	insert(_root, ++it);
-			// 	insert(_root, ++it);
-			// 	// std::cout << search(_root, 3)->pair->second << std::endl;
-
-			// }
+			
 			NODE delete_node(NODE root, const Key &key){
 				std::allocator<node<Key, T> > tmp_all;
 				if (!root)
@@ -279,7 +265,6 @@ namespace ft
 					_Alloc.construct(root->pair, ft::pair<Key, T>(suc->pair->first, suc->pair->second));
 					root->right = delete_node(root->right, key);
 				}
-				// _node_count -= 1;
 				return root;
 			}
 
@@ -392,13 +377,6 @@ namespace ft
 				}
 				return first;
 			}
-			
-			// template<
-			// 	class D_Key,
-			// 	class U,
-			// 	class Compare ,
-			// 	class Allocator >
-			// 	friend class map;
 
 			NODE _root;
 			size_t _node_count;
@@ -540,7 +518,7 @@ template<
 			void erase( iterator first, iterator last ){
 				while (first != last)
 				{
-					key_type tmp = first.first;
+					key_type tmp = first->first;
 					first++;
 					_tree->_root = _tree->delete_node(_tree->_root, tmp);
 				}

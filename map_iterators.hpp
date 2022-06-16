@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/15 19:20:42 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 09:43:22 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@
 #include <exception>
 #include <stdexcept>
 #include <iostream>
-// #include <string>
-// #include <limits>
-// #include <iterator>
-// #include <array>
-// #include <math.h>
 #include "map.hpp"
 
 
@@ -35,8 +30,7 @@ namespace ft
 	class bidirectional_iterator_tag;
 	class random_access_iterator_tag;
 
-	template <typename T> class map_iterator // : public ft::map<typename T::key_type,typename T::mapped_type,typename T::key_compare,typename T::allocator_type>
-	{
+	template <typename T> class map_iterator
 		public:
 			T *p;
 			typename T::NODE current_node;
@@ -52,45 +46,16 @@ namespace ft
 			
 
 			map_iterator() : p(NULL), current_node(NULL){}
-			map_iterator(T *ptr) : p(ptr), current_node(&(p->get_root())) {
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-			}
-			map_iterator(T const *ptr) : p(ptr), current_node(&(p->get_root())) {
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-			}
-			map_iterator(T *ptr, typename T::NODE n) : p(ptr), current_node(n){
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-			}
-			map_iterator(T const *ptr, typename T::NODE n) : p(ptr), current_node(n){
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
-			}
-			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node), first(other.first), second(other.second){}
+			map_iterator(T *ptr) : p(ptr), current_node(&(p->get_root())) {	}
+			map_iterator(T const *ptr) : p(ptr), current_node(&(p->get_root())) {}
+			map_iterator(T *ptr, typename T::NODE n) : p(ptr), current_node(n){}
+			map_iterator(T const *ptr, typename T::NODE n) : p(ptr), current_node(n){}
+			map_iterator(const map_iterator &other) : p(other.p), current_node(other.current_node){}
 			~map_iterator(){};
 			
 			map_iterator &operator=(const map_iterator &other){
 				p = other.p;
 				current_node = other.current_node;
-				first = other.first;
-				second = other.second;
-				// std::allocator<ft::pair<typename T::key_type const, typename T::mapped_type> > al;
-				// al.destroy(dummy);
-				// al.construct(dummy, ft::pair<typename T::key_type, typename T::mapped_type>(other.first, other.second));
 				return *this;
 			}
 			
@@ -105,30 +70,16 @@ namespace ft
 				typename T::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
 				return *this;
 			}
 			map_iterator &operator--(){
 				if (!this->current_node)
-				{
 					current_node = p->last();
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
 				else
 				{	typename T::NODE root = &p->get_root();
 					typename T::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
-					if (current_node)
-					{
-						first = current_node->pair->first;
-						second = current_node->pair->second;
-					}
 				}
 				return *this;
 			}
@@ -139,55 +90,34 @@ namespace ft
 				typename T::NODE suc = NULL;
 				p->next(root, suc, current_node);
 				current_node = suc;
-				if (current_node)
-				{
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
 				return copy;
 			}
 			map_iterator operator--(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
 				if (!this->current_node)
-				{
 					current_node = p->last();
-					first = current_node->pair->first;
-					second = current_node->pair->second;
-				}
 				else
 				{	typename T::NODE root = &p->get_root();
 					typename T::NODE pre = NULL;
 					p->prev(root, pre, current_node);
 					current_node = pre;
-					if (current_node)
-					{
-						first = current_node->pair->first;
-						second = current_node->pair->second;
-					}
 				}
 				return copy;
 			}
 
 
-			map_iterator<T> *operator->(){
-				return this;
+			typename T::value_type *operator->(){
+				if (!current_node)
+					return p->dummy;
+				return current_node->pair;
 			}
-			const map_iterator<T> *operator->() const{
-				return this;
+			const typename T::value_type *operator->() const{
+				if (!current_node)
+					return p->dummy;
+				return current_node->pair;
 			}
-
-			// template<
-			// 	class Key,
-			// 	class U,
-			// 	class Compare ,
-			// 	class Allocator >
-			// 	friend class map;
-
-			// template<class InputIt> friend class reverse_map_iterator;
 			
-			typename T::key_type first;
-			typename T::mapped_type second;
 			
 			friend bool operator==(const map_iterator<T> &lhs, const map_iterator<T> &rhs) {
 				return lhs.current_node == rhs.current_node;
@@ -223,15 +153,12 @@ namespace ft
 			typedef typename InputIt::pointer pointer;
 			typedef typename InputIt::reference reference;
 
-			typename object_type::key_type first;
-			typename object_type::mapped_type second;
-					
 			reverse_map_iterator() : it() {}
-			reverse_map_iterator(object_type *ptr) : it(ptr), first(it->first), second(it->second) {}
-			reverse_map_iterator(object_type const *ptr) : it(ptr), first(it->first), second(it->second) {}
-			reverse_map_iterator(object_type *ptr, typename object_type::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
-			reverse_map_iterator(object_type const *ptr, typename object_type::NODE n) : it(ptr, n), first(it->first), second(it->second) {}
-			reverse_map_iterator(const reverse_map_iterator &other) : it(other.it), first(it->first), second(it->second) {}
+			reverse_map_iterator(object_type *ptr) : it(ptr) {}
+			reverse_map_iterator(object_type const *ptr) : it(ptr) {}
+			reverse_map_iterator(object_type *ptr, typename object_type::NODE n) : it(ptr, n) {}
+			reverse_map_iterator(object_type const *ptr, typename object_type::NODE n) : it(ptr, n) {}
+			reverse_map_iterator(const reverse_map_iterator &other) : it(other.it) {}
 			~reverse_map_iterator(){};
 
 			reverse_map_iterator &operator=(const reverse_map_iterator &other){
@@ -245,13 +172,8 @@ namespace ft
 				return *(it.current_node->pair);
 			}
 
-			// template<class U >
-			// 	friend class map_iterator;
-				
 			reverse_map_iterator &operator++(){
 				it--;
-				first = it.current_node->pair->first;
-				second = it.current_node->pair->second;
 				return this;
 			}
 
@@ -259,20 +181,12 @@ namespace ft
 				(void)dummy;
 				reverse_map_iterator copy = *this;
 				it--;
-				if (it.current_node){
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
 				return copy;
 			}
 
 			reverse_map_iterator &operator--(){
 				if (!this->it.current_node)
-				{
 					it.current_node = it.p->first();
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
 				else
 					it++;
 				return this;
@@ -282,11 +196,7 @@ namespace ft
 				(void)dummy;
 				reverse_map_iterator copy = *this;
 				if (!this->it.current_node)
-				{
 					it.current_node = it.p->first();
-					first = it.current_node->pair->first;
-					second = it.current_node->pair->second;
-				}
 				else
 					it++;
 				return copy;
@@ -311,8 +221,16 @@ namespace ft
 				return lhs.it.current_node <= rhs.it.current_node;
 			}
 			
-			reverse_map_iterator<InputIt> *operator->(){
-				return this;
+			value_type *operator->(){
+				if (!it.current_node)
+					return it.p->dummy;
+				return it.current_node->pair;
+			}
+
+			const value_type *operator->() const {
+				if (!it.current_node)
+					return it.p->dummy;
+				return it.current_node->pair;
 			}
 	};
 }
