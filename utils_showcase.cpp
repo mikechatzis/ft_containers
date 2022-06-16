@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/14 21:39:39 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 16:11:59 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int main()
 	std::cout << "Using lexicographical compare on 1 empty container, reverse order: " << ft::lexicographical_compare(m.begin(), m.end(), mp.begin(), mp.end());
 	std::cout << "\n\n";
 	mp.clear();
-	std::cout << "Using lexicographical compare on  empty containers: " << ft::lexicographical_compare(m.begin(), m.end(), mp.begin(), mp.end());
+	std::cout << "Using lexicographical compare on 2 empty containers: " << ft::lexicographical_compare(m.begin(), m.end(), mp.begin(), mp.end());
 	std::cout << "\n\n";
 
 	return 0;

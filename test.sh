@@ -4,16 +4,40 @@ clear
 echo "$(tput setaf 2)$(tput bold)Welcome to the ft_containers test script\n\nTo test the project, please choose from \
 'vector', 'map', 'stack', 'utils', 'performance', or 'help'\n\n"
 
-echo "$(tput setaf 5)$(tput bold)Do you want the test output to be printed to the terminal? (y/n): $(tput setaf 0)$(tput sgr0)\c"
+echo "$(tput setaf 3)$(tput bold)Do you want the test output to be printed to the terminal? (y/n): $(tput setaf 0)$(tput sgr0)\c"
 read OUT
 
 	while :
 	do
 	if [ "$OUT" = "y" ] || [ "$OUT" = "n" ]; then
-		echo "$(tput setaf 5)$(tput bold)Please insert command: $(tput setaf 0)$(tput sgr0)\c"
+		echo "$(tput setaf 3)$(tput bold)Please insert command: $(tput setaf 0)$(tput sgr0)\c"
 		read SWITCH
 
 		case $SWITCH in
+			view_map)
+				clear
+				make -s map
+				echo "\n$(tput setaf 10)MAP TEST$(tput setaf 6)\n" | tee test_log > /dev/null
+				./map | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			view_vector)
+				clear
+				make -s vector
+				echo "\n$(tput setaf 10)VECTOR TEST OUTPUT$(tput setaf 6)\n" | tee test_log > /dev/null
+				./vector | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			view_stack)
+				clear
+				make -s stack
+				echo "\n$(tput setaf 10)STACK TEST OUTPUT$(tput setaf 6)\n" | tee test_log > /dev/null
+				./stack | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
 			map)
 				clear
 				make -s map
@@ -35,8 +59,8 @@ read OUT
 			utils)
 				clear
 				make -s utils
-				echo $(tput setaf 3) | tee test_log > /dev/null
-				leaks --atExit -- ./utils | tee -a test_log > /dev/null
+				echo $(tput setaf 10) | tee test_log > /dev/null
+				./utils | tee -a test_log > /dev/null
 				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
 				make -s fclean
 			;;
@@ -61,14 +85,18 @@ read OUT
 				make -s fclean
 			;;
 			help)
-				echo "$(tput setaf 4)$(tput bold)'map', 'vector', 'stack' & 'utils':\n$(tput sgr0)Executes one binary using the format 'ft::container' and another using 'std::container' and diffs them. Also checks execution time\n"
-				echo "$(tput bold)$(tput setaf 4)'performance':\n$(tput sgr0)Runs the school's provided main twice, with ft:: and std:: namespace respectively, and displays execution times for comparison\n"
-				echo "$(tput bold)$(tput setaf 4)'help':\n$(tput sgr0)Displays this help message$(tput setaf 0)\n"
-				echo "$(tput bold)$(tput setaf 4)'end':\n$(tput sgr0)Exit the script$(tput setaf 0)\n"
+				echo "$(tput setaf 4)$(tput bold)'map', 'vector'& 'stack':\
+				\n$(tput sgr0)    Executes one binary using the format 'ft::container' and another using 'std::container' and diffs them.\
+				\n    Precede each command with 'view_'(wthout leaving a space), to display the tests output\n"
+				echo "$(tput setaf 4)$(tput bold)'utils':\
+				\n$(tput sgr0)    Display tests on lexicographical_compare and iterator_traits. Enable_if is used in vector\n"
+				echo "$(tput bold)$(tput setaf 4)'performance':\n$(tput sgr0)    Runs the school's provided main twice, with ft:: and std:: namespace respectively, and displays execution times for comparison\n"
+				echo "$(tput bold)$(tput setaf 4)'help':\n$(tput sgr0)    Displays this help message$(tput setaf 0)\n"
+				echo "$(tput bold)$(tput setaf 4)'end':\n$(tput sgr0)    Exits the script$(tput setaf 0)\n"
+				echo "$(tput bold)$(tput setaf 4)'rm':\n$(tput sgr0)    Deletes the 'test_log' file$(tput setaf 0)\n"
 				echo "$(tput setaf 6)This script requires 2 main files per container, one named: '{container_name}_main' and a second named: 'stl_{container_name}_main' \
 				\nThe script uses the included makefile \
 				\nAdditionally the 'main.cpp' file provided by the subject and a copy of it named: 'main2.cpp', which needs to be configured to run the ft::containers, are required$(tput setaf 0)\n"
-				echo "$(tput bold)$(tput setaf 4)'rm':\n$(tput sgr0)Deletes the 'test_log' file$(tput setaf 0)\n"
 			;;
 			end) 
 				break
