@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 09:44:04 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 09:45:36 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@
 #include <exception>
 #include <stdexcept>
 #include "map_iterators.hpp"
-// #include <string>
-// #include <iostream>
-// #include <array>
-// #include <math.h>
 
 namespace ft
 {
@@ -694,9 +690,7 @@ template<
 					throw std::out_of_range("ft::map:at: key not found");
 				return it->second;
 			}
-
-			// template<class InputIt, class K> friend class reverse_map_iterator;
-			// template<class K> friend class map_iterator;
+			
 			mapped_type& operator[] (const key_type& key)
 			{
 				iterator tmp = this->find(key);
@@ -704,7 +698,7 @@ template<
 				if (tmp == this->end())
 					_tree->insert_pair(_tree->_root, value_type(key, mapped_type()));
 				tmp = this->find(key);
-				return (tmp.current_node->pair->second);
+				return (tmp->second);
 			}
 
 		private:

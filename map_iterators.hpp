@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 09:43:22 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/16 09:46:23 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ namespace ft
 	class bidirectional_iterator_tag;
 	class random_access_iterator_tag;
 
-	template <typename T> class map_iterator
+	template <typename T> class map_iterator{
 		public:
 			T *p;
 			typename T::NODE current_node;
