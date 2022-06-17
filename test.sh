@@ -116,8 +116,10 @@ read OUT
 				rm -rf test_log
 			fi
 		fi
+	elif [ "$OUT" = "end" ]; then
+		exit
 	else
-		echo "$(tput setaf 3)$(tput bold)Please type 'y', for yes and 'n', for no: $(tput setaf 0)$(tput sgr0)\c"
+		echo "$(tput setaf 3)$(tput bold)Please type 'y', for yes, or 'n', for no. Type 'end' to exit: $(tput setaf 0)$(tput sgr0)\c"
 		read OUT
 	fi
 	done
