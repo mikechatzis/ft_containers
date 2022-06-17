@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/17 17:37:25 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 23:01:17 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,133 +35,128 @@ template <typename T> class vector_iterator
 		typedef T &reference;
 		typedef ft::random_access_iterator_tag iterator_category;
 		
-		vector_iterator();
-		vector_iterator(T *ptr);
-		vector_iterator(const vector_iterator &other);
+		vector_iterator(): p(NULL) {}
+		vector_iterator(T *ptr) : p(ptr) {}
+		vector_iterator(const vector_iterator &other){
+			*this = other;
+		}
 		~vector_iterator(){};
 		
-		vector_iterator &operator=(const vector_iterator &other);
-		reference operator*(void) const;
-		pointer operator->(void) const;
-		vector_iterator &operator++();
-		vector_iterator &operator--();
-		vector_iterator operator++(int dummy);
-		vector_iterator operator--(int dummy);
-		vector_iterator &operator+=(const difference_type &offset);
-		vector_iterator &operator-=(const difference_type &offset);
-		vector_iterator operator+(difference_type offset) const;
-		vector_iterator operator-(difference_type offset) const;
+		vector_iterator &operator=(const vector_iterator &other){
+			this->p = other.p;
+			return *this;
+		}
+		reference operator*(void) {
+			return *(this->p);
+		}
+		const T &operator*(void) const {
+			return *(p);
+		}
+		pointer operator->() {
+			return this->p;
+		}
+		const pointer operator->() const {
+			return this->p;
+		}
+		reference operator[](difference_type n){
+			return *((*this) + n);
+		}
+		const T &operator[](difference_type n)const{
+			return *((*this) + n);
+		}
+		vector_iterator &operator++(){
+			p++;
+			return (*this);
+		}
+		const vector_iterator &operator++() const {
+			p++;
+			return (*this);
+		}
+		vector_iterator &operator--(){
+			p--;
+			return (*this);
+		}
+		const vector_iterator &operator--() const {
+			p--;
+			return (*this);
+		}
+		vector_iterator operator++(int dummy){
+			(void)dummy;
+			vector_iterator<T> copy = *this;
+			this->p++;
+			return (copy);
+		}
+		const vector_iterator operator++(int dummy)const{
+			(void)dummy;
+			vector_iterator<T> copy = *this;
+			this->p++;
+			return (copy);
+		}
+		vector_iterator operator--(int dummy){
+			(void)dummy;
+			vector_iterator<T> copy = *this;
+			this->p--;
+			return (copy);
+		}
+		const vector_iterator operator--(int dummy)const{
+			(void)dummy;
+			vector_iterator<T> copy = *this;
+			this->p--;
+			return (copy);
+		}
+		vector_iterator &operator+=(const difference_type &offset){
+			this->p += offset;
+			return (*this);
+		}
+		const vector_iterator &operator+=(const difference_type &offset)const{
+			this->p += offset;
+			return (*this);
+		}
+		vector_iterator &operator-=(const difference_type &offset){
+			this->p -= offset;
+			return (*this);
+		}
+		const vector_iterator &operator-=(const difference_type &offset)const{
+			this->p -= offset;
+			return (*this);
+		}
+		vector_iterator operator+(difference_type offset){
+			vector_iterator copy(*this);
 
-		bool operator==(const vector_iterator &rhs) const;
-		bool operator!=(const vector_iterator &rhs) const;
+			copy.p += offset;
+
+			return (copy);
+		}
+		const vector_iterator operator+(difference_type offset)const{
+			vector_iterator copy(*this);
+
+			copy.p += offset;
+
+			return (copy);
+		}
+		vector_iterator operator-(difference_type offset){
+			vector_iterator copy(*this);
+
+			copy.p -= offset;
+
+			return (copy);
+		}
+		const vector_iterator operator-(difference_type offset)const{
+			vector_iterator copy(*this);
+
+			copy.p -= offset;
+
+			return (copy);
+		}
+		bool operator==(const vector_iterator &rhs) const {
+			return this->p == rhs.p;
+		}
+		bool operator!=(const vector_iterator &rhs) const{
+			return this->p != rhs.p;
+		}
 
 		mutable pointer p;
 };
-
-template <typename T> vector_iterator<T>::vector_iterator() : p(NULL) {}
-
-template <typename T> vector_iterator<T>::vector_iterator(T *ptr) : p(ptr) {}
-
-template <typename T> vector_iterator<T>::vector_iterator(const vector_iterator &other)
-{
-	*this = other;
-}
-
-template <typename T> vector_iterator<T> &vector_iterator<T>::operator=(const vector_iterator &other)
-{
-	this->p = other.p;
-	return *this;
-}
-
-template <typename T>
-typename vector_iterator<T>::reference vector_iterator<T>::operator*(void) const
-{
-    return *(this->p);
-}
-
-template <typename T>
-typename vector_iterator<T>::pointer vector_iterator<T>::operator->(void) const
-{
-    return this->p;
-}
-
-template <typename T>
-vector_iterator<T> &vector_iterator<T>::operator++()
-{
-    p++;
-    return (*this);
-}
-
-template <typename T>
-vector_iterator<T> &vector_iterator<T>::operator--()
-{
-    p--;
-    return (*this);
-}
-
-template <typename T>
-vector_iterator<T> vector_iterator<T>::operator++(int dummy)
-{
-    (void)dummy;
-    vector_iterator<T> copy = *this;
-    this->p++;
-    return (copy);
-}
-
-template <typename T>
-vector_iterator<T> vector_iterator<T>::operator--(int dummy)
-{
-    (void)dummy;
-    vector_iterator<T> copy = *this;
-    this->p--;
-    return (copy);
-}
-
-template <typename T>
-bool vector_iterator<T>::operator==(const vector_iterator &rhs) const
-{
-    return this->p == rhs.p;
-}
-
-template <typename T>
-bool vector_iterator<T>::operator!=(const vector_iterator &rhs) const
-{
-    return this->p != rhs.p;
-}
-
-template <typename T>
-vector_iterator<T> &vector_iterator<T>::operator+=(const difference_type &offset)
-{
-    this->p += offset;
-    return (*this);
-}
-
-template <typename T>
-vector_iterator<T> &vector_iterator<T>::operator-=(const difference_type &offset)
-{
-    this->p -= offset;
-    return (*this);
-}
-
-template <typename T>
-vector_iterator<T> vector_iterator<T>::operator+(difference_type offset) const
-{
-    vector_iterator copy(*this);
-
-    copy.p += offset;
-
-    return (copy);
-}
-
-template <typename T>
-vector_iterator<T> vector_iterator<T>::operator-(difference_type offset) const
-{
-    vector_iterator copy(*this);
-
-    copy.p -= offset;
-
-    return (copy);
-}
 
 template <typename T>
 typename vector_iterator<T>::difference_type operator-(const vector_iterator<T> &lhs, const vector_iterator<T> &rhs)
@@ -254,151 +249,125 @@ public:
     typedef typename Iterator::pointer pointer;
     typedef typename Iterator::reference reference;
 
-    explicit reverse_vector_iterator(iterator_type it);
+    explicit reverse_vector_iterator(iterator_type it): it(it) {}
     template <class Iter>
-    reverse_vector_iterator(const reverse_vector_iterator<Iter> &rev_it);
-    reverse_vector_iterator();
-    ~reverse_vector_iterator();
+    reverse_vector_iterator(const reverse_vector_iterator<Iter> &rev_it) : it(rev_it.it){}
+    reverse_vector_iterator() : it(){}
+    ~reverse_vector_iterator(){}
 
-    reverse_vector_iterator &operator=(const reverse_vector_iterator &rhs);
+    reverse_vector_iterator &operator=(const reverse_vector_iterator &rhs){
+		if (this != &rhs)
+		{
+			this->it = rhs.it;
+		}
+		return (*this);
+	}
 
-    iterator_type base() const;
+    iterator_type base() const{
+		return it;
+	}
 
-    reference operator*() const;
-    reverse_vector_iterator &operator++();
-    reverse_vector_iterator operator++(int);
-    reverse_vector_iterator &operator--();
-    reverse_vector_iterator operator--(int);
-    reverse_vector_iterator operator+(difference_type n) const;
-    reverse_vector_iterator &operator+=(difference_type n);
-    reverse_vector_iterator operator-(difference_type n) const;
-    reverse_vector_iterator &operator-=(difference_type n);
-    reference operator[](difference_type n) const;
+    reference operator*() {
+		Iterator itCopy(this->it);
 
-    pointer operator->() const;
+		itCopy--;
+		return (*itCopy);
+	}
+	const value_type &operator*() const {
+		Iterator itCopy(this->it);
 
-private:
+		itCopy--;
+		return (*itCopy);
+	}
+    reverse_vector_iterator &operator++(){
+		it--;
+		return (*this);
+	}
+	const reverse_vector_iterator &operator++()const{
+		it--;
+		return (*this);
+	}
+    reverse_vector_iterator operator++(int){
+		reverse_vector_iterator tmp(*this);
+
+		++(*this);
+		return (tmp);
+	}
+	const reverse_vector_iterator operator++(int)const{
+		reverse_vector_iterator tmp(*this);
+
+		++(*this);
+		return (tmp);
+	}
+    reverse_vector_iterator &operator--(){
+		it++;
+		return (*this);
+	}
+	const reverse_vector_iterator &operator--()const{
+		it++;
+		return (*this);
+	}
+    reverse_vector_iterator operator--(int){
+		reverse_vector_iterator tmp(*this);
+
+		--(*this);
+		return (tmp);
+	}
+	const reverse_vector_iterator operator--(int)const{
+		reverse_vector_iterator tmp(*this);
+
+		--(*this);
+		return (tmp);
+	}
+    reverse_vector_iterator operator+(difference_type n){
+		return (reverse_vector_iterator<Iterator>(it - n));
+	}
+	const reverse_vector_iterator operator+(difference_type n)const{
+		return (reverse_vector_iterator<Iterator>(it - n));
+	}
+    reverse_vector_iterator &operator+=(difference_type n){
+		it -= n;
+		return (*this);
+	}
+	const reverse_vector_iterator &operator+=(difference_type n)const{
+		it -= n;
+		return (*this);
+	}
+    reverse_vector_iterator operator-(difference_type n){
+		return (reverse_vector_iterator<Iterator>(it + n));
+	}
+	const reverse_vector_iterator operator-(difference_type n)const{
+		return (reverse_vector_iterator<Iterator>(it + n));
+	}
+    reverse_vector_iterator &operator-=(difference_type n){
+		it += n;
+		return (*this);
+	}
+	const reverse_vector_iterator &operator-=(difference_type n)const{
+		it += n;
+		return (*this);
+	}
+    reference operator[](difference_type n){
+		return *((*this) + n);
+	}
+	const value_type &operator[](difference_type n)const{
+		return *((*this) + n);
+	}
+    pointer operator->() {
+		Iterator itCopy(this->it);
+
+		itCopy--;
+		return (itCopy.operator->());
+	}
+	const pointer operator->() const {
+		Iterator itCopy(this->it);
+
+		itCopy--;
+		return (itCopy.operator->());
+	}
+
     iterator_type it;
 };
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>::reverse_vector_iterator() : it()
-{
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>::reverse_vector_iterator(iterator_type it) : it(it)
-{
-}
-
-template <class Iterator>
-template <class Iter>
-reverse_vector_iterator<Iterator>::reverse_vector_iterator(const reverse_vector_iterator<Iter> &rev_it) : it(rev_it.it)
-{
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>::~reverse_vector_iterator()
-{
-}
-
-template <class Iterator>
-typename reverse_vector_iterator<Iterator>::iterator_type reverse_vector_iterator<Iterator>::base() const
-{
-    return it;
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator=(const reverse_vector_iterator &rhs)
-{
-    if (this != &rhs)
-    {
-        this->it = rhs.it;
-    }
-    return (*this);
-}
-
-template <class Iterator>
-typename reverse_vector_iterator<Iterator>::reference reverse_vector_iterator<Iterator>::operator*() const
-{
-    Iterator itCopy(this->it);
-
-    itCopy--;
-    return (*itCopy);
-}
-
-template <class Iterator>
-typename reverse_vector_iterator<Iterator>::pointer reverse_vector_iterator<Iterator>::operator->() const
-{
-    Iterator itCopy(this->it);
-
-    itCopy--;
-    return (itCopy.operator->());
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator++()
-{
-    it--;
-    return (*this);
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	reverse_vector_iterator<Iterator>::operator++(int)
-{
-    reverse_vector_iterator tmp(*this);
-
-    ++(*this);
-    return (tmp);
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator--()
-{
-    it++;
-    return (*this);
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	reverse_vector_iterator<Iterator>::operator--(int)
-{
-    reverse_vector_iterator tmp(*this);
-
-    --(*this);
-    return (tmp);
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	reverse_vector_iterator<Iterator>::operator+(difference_type n) const
-{
-    return (reverse_vector_iterator<Iterator>(it - n));
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator+=(difference_type n)
-{
-    it -= n;
-    return (*this);
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	reverse_vector_iterator<Iterator>::operator-(difference_type n) const
-{
-    return (reverse_vector_iterator<Iterator>(it + n));
-}
-
-template <class Iterator>
-reverse_vector_iterator<Iterator>	&reverse_vector_iterator<Iterator>::operator-=(difference_type n)
-{
-    it += n;
-    return (*this);
-}
-
-template <class Iterator>
-typename reverse_vector_iterator<Iterator>::reference reverse_vector_iterator<Iterator>::operator[](difference_type n) const
-{
-    return *((*this) + n);
-}
 
 template <class Iterator>
 bool operator==(const reverse_vector_iterator<Iterator> &lhs,
@@ -466,9 +435,9 @@ namespace ft
 		public:
 			typedef T value_type;
 			typedef vector_iterator<T> iterator;
-			typedef vector_iterator<const T> const_iterator;
+			typedef const vector_iterator<T> const_iterator;
 			typedef reverse_vector_iterator<iterator> reverse_iterator;
-			typedef reverse_vector_iterator<const_iterator> const_reverse_iterator;
+			typedef const reverse_vector_iterator<const_iterator> const_reverse_iterator;
 			typedef T &reference;
 			typedef T* pointer;
 			typedef const T* const_pointer;
