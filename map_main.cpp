@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/17 17:42:19 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 17:51:09 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,10 @@ int main()
 	std::cout << "std::map max size: " << m.max_size() << std::endl << std::endl;
 
 	it = m.begin();
+	it2 = ++it;
 	m.erase(++it);
+	std::cout<< "iterator valid after deletion, prints: "<< ++it2->second;
+	std::cout << std::endl;
 	it = m.begin();
 	std::cout<<"m, after erasing second element: ";
 	while(it != m.end())
