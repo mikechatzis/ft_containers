@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/14 21:40:34 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 23:23:45 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 #include <stack>
 #include <map>
 #include <vector>
-#include <array>
 
 int main(){
 	
-	std::array<int, 10> arr = {1,2,3,4,5,6,7,8,9,10};
-	std::vector<int> v(arr.begin(), arr.end());
+	std::vector<int> a;
+	for (int i = 0; i<42; i++)
+		a.push_back(i + 1);
+	std::vector<int> v(a.begin(), a.end());
 	std::stack<int, std::vector<int> > s(v);
 	std::stack<int, std::vector<int> > s2 = s;
 	

@@ -6,22 +6,22 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/14 21:40:30 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 23:23:20 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.hpp"
 #include "vector.hpp"
 #include "stack.hpp"
-#include <stack>
-#include <map>
 #include <vector>
-#include <array>
+
 
 int main(){
 	
-	std::array<int, 10> arr = {1,2,3,4,5,6,7,8,9,10};
-	ft::vector<int> v(arr.begin(), arr.end());
+	std::vector<int> a;
+	for (int i = 0; i<42; i++)
+		a.push_back(i + 1);
+	ft::vector<int> v(a.begin(), a.end());
 	ft::stack<int> s(v);
 	ft::stack<int> s2 = s;
 	
