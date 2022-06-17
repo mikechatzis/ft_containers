@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 16:36:07 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 17:42:42 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,6 +395,8 @@ int main()
 	// con_it2->second = 13;
 	it->second = 13;
 	it = mc.begin();
+	if (con_it2 == it)
+		std::cout <<"comparison between const and non const iterator successful";
 	std::cout << "testing reassigning, m:\n";
 	while(it != mc.end())
 		std::cout << "(" << it->first << ", " << it++->second << ")" << " ";

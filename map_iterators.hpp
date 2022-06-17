@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 17:13:38 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 18:40:03 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 17:40:59 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ namespace ft
 	template <typename T> class map_iterator{
 		public:
 			T *p;
-			typename T::NODE current_node;
+			mutable typename T::NODE current_node;
 
 			typedef T object_type;
 			typedef std::ptrdiff_t difference_type;
@@ -59,7 +59,13 @@ namespace ft
 				return *this;
 			}
 			
-			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
+			ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() {
+				if (!current_node)
+					return *(p->dummy);
+				return *(current_node->pair);
+			}
+
+			const ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
 				if (!current_node)
 					return *(p->dummy);
 				return *(current_node->pair);
@@ -72,6 +78,15 @@ namespace ft
 				current_node = suc;
 				return *this;
 			}
+
+			const map_iterator &operator++()const{
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
+				return *this;
+			}
+			
 			map_iterator &operator--(){
 				if (!this->current_node)
 					current_node = p->last();
@@ -83,6 +98,19 @@ namespace ft
 				}
 				return *this;
 			}
+
+			const map_iterator &operator--()const{
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
+				return *this;
+			}
+			
 			map_iterator operator++(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
@@ -92,6 +120,17 @@ namespace ft
 				current_node = suc;
 				return copy;
 			}
+
+			const map_iterator operator++(int dummy)const{
+				(void)dummy;
+				map_iterator<T> copy = *this;
+				typename T::NODE root = &p->get_root();
+				typename T::NODE suc = NULL;
+				p->next(root, suc, current_node);
+				current_node = suc;
+				return copy;
+			}
+			
 			map_iterator operator--(int dummy){
 				(void)dummy;
 				map_iterator<T> copy = *this;
@@ -106,6 +145,19 @@ namespace ft
 				return copy;
 			}
 
+			const map_iterator operator--(int dummy)const{
+				(void)dummy;
+				map_iterator<T> copy = *this;
+				if (!this->current_node)
+					current_node = p->last();
+				else
+				{	typename T::NODE root = &p->get_root();
+					typename T::NODE pre = NULL;
+					p->prev(root, pre, current_node);
+					current_node = pre;
+				}
+				return copy;
+			}
 
 			typename T::value_type *operator->(){
 				if (!current_node)
@@ -139,116 +191,6 @@ namespace ft
 			}
 	};
 
-	template <typename T> class const_map_iterator{
-		public:
-			T *p;
-			typename T::NODE current_node;
-
-			typedef T object_type;
-			typedef std::ptrdiff_t difference_type;
-			typedef typename T::value_type value_type;
-			typedef typename T::value_type& reference;
-			typedef const typename T::value_type& const_reference;
-			typedef typename std::allocator<value_type>::pointer pointer;
-			typedef typename std::allocator<value_type>::const_pointer const_pointer;
-			typedef ft::bidirectional_iterator_tag iterator_category;
-			
-
-			const_map_iterator() : p(NULL), current_node(NULL){}
-			const_map_iterator(T *ptr) : p(ptr), current_node(&(p->get_root())) {	}
-			const_map_iterator(T const *ptr) : p(ptr), current_node(&(p->get_root())) {}
-			const_map_iterator(T *ptr, typename T::NODE n) : p(ptr), current_node(n){}
-			const_map_iterator(T const *ptr, typename T::NODE n) : p(ptr), current_node(n){}
-			const_map_iterator(const const_map_iterator &other) : p(other.p), current_node(other.current_node){}
-			~const_map_iterator(){};
-			
-			const_map_iterator &operator=(const const_map_iterator &other){
-				p = other.p;
-				current_node = other.current_node;
-				return *this;
-			}
-			
-			const ft::pair<const typename T::key_type, typename T::mapped_type> &operator*() const{
-				if (!current_node)
-					return *(p->dummy);
-				return *(current_node->pair);
-			}
-			
-			const_map_iterator &operator++(){
-				typename T::NODE root = &p->get_root();
-				typename T::NODE suc = NULL;
-				p->next(root, suc, current_node);
-				current_node = suc;
-				return *this;
-			}
-			const_map_iterator &operator--(){
-				if (!this->current_node)
-					current_node = p->last();
-				else
-				{	typename T::NODE root = &p->get_root();
-					typename T::NODE pre = NULL;
-					p->prev(root, pre, current_node);
-					current_node = pre;
-				}
-				return *this;
-			}
-			const_map_iterator operator++(int dummy){
-				(void)dummy;
-				const_map_iterator<T> copy = *this;
-				typename T::NODE root = &p->get_root();
-				typename T::NODE suc = NULL;
-				p->next(root, suc, current_node);
-				current_node = suc;
-				return copy;
-			}
-			const_map_iterator operator--(int dummy){
-				(void)dummy;
-				const_map_iterator<T> copy = *this;
-				if (!this->current_node)
-					current_node = p->last();
-				else
-				{	typename T::NODE root = &p->get_root();
-					typename T::NODE pre = NULL;
-					p->prev(root, pre, current_node);
-					current_node = pre;
-				}
-				return copy;
-			}
-
-
-			typename T::value_type *operator->(){
-				if (!current_node)
-					return p->dummy;
-				return current_node->pair;
-			}
-			const typename T::value_type *operator->() const{
-				if (!current_node)
-					return p->dummy;
-				return current_node->pair;
-			}
-			
-			
-			friend bool operator==(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node == rhs.current_node;
-			}
-			friend bool operator!=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node != rhs.current_node;
-			}
-			friend bool operator<(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node < rhs.current_node;
-			}
-			friend bool operator>(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node > rhs.current_node;
-			}
-			friend bool operator>=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node >= rhs.current_node;
-			}
-			friend bool operator<=(const const_map_iterator<T> &lhs, const const_map_iterator<T> &rhs) {
-				return lhs.current_node <= rhs.current_node;
-			}
-	};
-
-	
 	template<class InputIt> class reverse_map_iterator {
 		private:
 			InputIt it;
@@ -275,7 +217,13 @@ namespace ft
 				return *this;
 			}
 
-			ft::pair<const typename object_type::key_type, typename object_type::mapped_type> &operator*(void) const{
+			ft::pair<const typename object_type::key_type, typename object_type::mapped_type> &operator*(void) {
+				if (!it.current_node)
+					return *(it.p->dummy);
+				return *(it.current_node->pair);
+			}
+
+			const ft::pair<const typename object_type::key_type, typename object_type::mapped_type> &operator*(void) const{
 				if (!it.current_node)
 					return *(it.p->dummy);
 				return *(it.current_node->pair);
@@ -286,7 +234,19 @@ namespace ft
 				return this;
 			}
 
+			const reverse_map_iterator &operator++()const{
+				it--;
+				return this;
+			}
+
 			reverse_map_iterator operator++(int dummy){
+				(void)dummy;
+				reverse_map_iterator copy = *this;
+				it--;
+				return copy;
+			}
+
+			const reverse_map_iterator operator++(int dummy)const{
 				(void)dummy;
 				reverse_map_iterator copy = *this;
 				it--;
@@ -301,7 +261,25 @@ namespace ft
 				return this;
 			}
 
+			const reverse_map_iterator &operator--()const{
+				if (!this->it.current_node)
+					it.current_node = it.p->first();
+				else
+					it++;
+				return this;
+			}
+
 			reverse_map_iterator operator--(int dummy){
+				(void)dummy;
+				reverse_map_iterator copy = *this;
+				if (!this->it.current_node)
+					it.current_node = it.p->first();
+				else
+					it++;
+				return copy;
+			}
+
+			const reverse_map_iterator operator--(int dummy)const{
 				(void)dummy;
 				reverse_map_iterator copy = *this;
 				if (!this->it.current_node)

@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/16 18:07:04 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/17 17:37:25 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ template <typename T> class vector_iterator
 		bool operator==(const vector_iterator &rhs) const;
 		bool operator!=(const vector_iterator &rhs) const;
 
-		pointer p;
+		mutable pointer p;
 };
 
 template <typename T> vector_iterator<T>::vector_iterator() : p(NULL) {}
