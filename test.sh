@@ -2,7 +2,9 @@
 
 clear
 echo "$(tput setaf 2)$(tput bold)Welcome to the ft_containers test script\n\nTo test the project, please choose from \
-'vector', 'map', 'stack', 'utils' (precede with view_ to view test info), 'performance', or 'help'\n\n"
+'vector', 'map', 'stack', 'utils' (precede with view_ to view test info), 'performance', or 'help'\
+\nType 'view_stl' to view test expected output while using the STL containers
+\n"
 
 echo "$(tput setaf 3)$(tput bold)Do you want the test output to be printed to the terminal? (y/n): $(tput setaf 0)$(tput sgr0)\c"
 read OUT
@@ -17,7 +19,7 @@ read OUT
 			view_map)
 				clear
 				make -s map
-				echo "\n$(tput setaf 10)MAP TEST$(tput setaf 6)\n" | tee test_log > /dev/null
+				echo "\n$(tput setaf 10)MAP TEST OUTPUT$(tput setaf 6)\n" | tee test_log > /dev/null
 				./map | tee -a test_log > /dev/null
 				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
 				make -s fclean
@@ -35,6 +37,20 @@ read OUT
 				make -s stack
 				echo "\n$(tput setaf 10)STACK TEST OUTPUT$(tput setaf 6)\n" | tee test_log > /dev/null
 				./stack | tee -a test_log > /dev/null
+				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
+				make -s fclean
+			;;
+			view_stl)
+				clear
+				make -s stack
+				make -s vector
+				make -s map
+				echo "\n$(tput setaf 10)VECTOR TEST OUTPUT$(tput setaf 5)\n" | tee test_log > /dev/null
+				./stl_vector | tee -a test_log > /dev/null
+				echo "\n$(tput setaf 10)MAP TEST OUTPUT$(tput setaf 3)\n" | tee -a test_log > /dev/null
+				./stl_map | tee -a test_log > /dev/null
+				echo "\n$(tput setaf 10)STACK TEST OUTPUT$(tput setaf 4)\n" | tee -a test_log > /dev/null
+				./stl_stack | tee -a test_log > /dev/null
 				echo "$(tput setaf 0)$(tput sgr0)\c" | tee -a test_log > /dev/null
 				make -s fclean
 			;;
@@ -88,15 +104,15 @@ read OUT
 				echo "$(tput setaf 4)$(tput bold)'map', 'vector' & 'stack':\
 				\n$(tput sgr0)    Executes one binary using the format 'ft::container' and another using 'std::container' and diffs them.\
 				\n    Precede each command with 'view_'(wthout leaving a space), to display the tests' output\n"
+				echo "$(tput setaf 4)$(tput bold)'view_stl':\
+				\n$(tput sgr0)    Display test outputs, using the STL containers.\n"
 				echo "$(tput setaf 4)$(tput bold)'utils':\
 				\n$(tput sgr0)    Display tests on lexicographical_compare and iterator_traits. Enable_if is used in vector\n"
 				echo "$(tput bold)$(tput setaf 4)'performance':\n$(tput sgr0)    Runs the school's provided main twice, with ft:: and std:: namespace respectively, and displays execution times for comparison\n"
 				echo "$(tput bold)$(tput setaf 4)'rm':\n$(tput sgr0)    Deletes the 'test_log' file$(tput setaf 0)\n"
 				echo "$(tput bold)$(tput setaf 4)'help':\n$(tput sgr0)    Displays this help message$(tput setaf 0)\n"
 				echo "$(tput bold)$(tput setaf 4)'end':\n$(tput sgr0)    Exits the script$(tput setaf 0)\n"
-				echo "$(tput setaf 6)This script requires 2 main files per container, one named: '{container_name}_main' and a second named: 'stl_{container_name}_main' \
-				\nThe script uses the included makefile \
-				\nAdditionally the 'main.cpp' file provided by the subject and a copy of it named: 'main2.cpp', which needs to be configured to run the ft::containers, are required$(tput setaf 0)\n"
+				echo "$(tput setaf 6)Files required: 'vector.hpp' 'map.hpp' 'stack.hpp' 'utils.hpp'$(tput setaf 0)\n"
 			;;
 			end) 
 				break

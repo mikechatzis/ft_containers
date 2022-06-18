@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/17 23:01:17 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/18 10:22:14 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -977,10 +977,5 @@ namespace ft
 		x.swap(y);
 	}
 }
-
-// template< typename T, class Allocator = std::allocator<T> > vector::vector(const allocator_type &alloc)
-// {
-// 	this->arr = alloc.allocate(0);
-// }
 
 #endif
