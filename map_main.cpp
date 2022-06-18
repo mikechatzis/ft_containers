@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/17 17:51:09 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/18 12:50:13 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int main()
 		std::cout << "begin iterator of empty map is same as end iterator";
 	std::cout << std::endl << std::endl;
 
-	m2.insert(ft::pair<int,int>(1,1));
+	m2.insert(ft::make_pair<int,int>(1, 1));
 	it = m2.begin();
 	std::cout<<"m2, inserting at empty map. m2: ";
 	while(it != m2.end())
