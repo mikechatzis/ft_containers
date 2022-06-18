@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 13:31:29 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/17 23:23:20 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/18 12:30:00 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "vector.hpp"
 #include "stack.hpp"
 #include <vector>
+#include <list>
+#include <deque>
 
 
 int main(){
@@ -66,4 +68,63 @@ int main(){
 		std::cout << "s > s2\n\n";
 	if (s <= s2)
 		std::cout << "s >= s2\n\n";
+
+	ft::stack<int, std::vector<int> > stl(a);
+	if (stl.empty())
+		std::cout << "stack s is empty\n\n";
+	else
+		std::cout << "stack s is not empty\n\n";
+	std::cout << "stack s size: " << stl.size();
+	std::cout << std::endl << std::endl;
+
+	std::cout << "stack s top element: " << stl.top();
+	std::cout << std::endl << std::endl;
+
+	s.pop();
+	std::cout << "stack s top element after pop: " << stl.top();
+	std::cout << std::endl << std::endl;
+
+	s.push(42);
+	std::cout << "stack s top element after pushing '42': " << stl.top();
+	std::cout << std::endl << std::endl;
+
+	std::list<int> lst(a.begin(), a.end());
+	ft::stack<int, std::list<int> > stl2(lst);
+	if (stl2.empty())
+		std::cout << "stack s is empty\n\n";
+	else
+		std::cout << "stack s is not empty\n\n";
+	std::cout << "stack s size: " << stl2.size();
+	std::cout << std::endl << std::endl;
+
+	std::cout << "stack s top element: " << stl2.top();
+	std::cout << std::endl << std::endl;
+
+	s.pop();
+	std::cout << "stack s top element after pop: " << stl2.top();
+	std::cout << std::endl << std::endl;
+
+	s.push(42);
+	std::cout << "stack s top element after pushing '42': " << stl2.top();
+	std::cout << std::endl << std::endl;
+
+	std::deque<int> de(a.begin(), a.end());
+	ft::stack<int, std::deque<int> > stl3(de);
+	if (stl3.empty())
+		std::cout << "stack s is empty\n\n";
+	else
+		std::cout << "stack s is not empty\n\n";
+	std::cout << "stack s size: " << stl3.size();
+	std::cout << std::endl << std::endl;
+
+	std::cout << "stack s top element: " << stl3.top();
+	std::cout << std::endl << std::endl;
+
+	s.pop();
+	std::cout << "stack s top element after pop: " << stl3.top();
+	std::cout << std::endl << std::endl;
+
+	s.push(42);
+	std::cout << "stack s top element after pushing '42': " << stl3.top();
+	std::cout << std::endl << std::endl;
 }
