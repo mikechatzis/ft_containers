@@ -6,7 +6,7 @@
 /*   By: mchatzip <mchatzip@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 14:03:07 by mchatzip          #+#    #+#             */
-/*   Updated: 2022/06/18 10:22:14 by mchatzip         ###   ########.fr       */
+/*   Updated: 2022/06/19 14:27:31 by mchatzip         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,8 +480,11 @@ namespace ft
 			
 			//DESTRUCTOR
 			~vector(){
-				if (this->arr_)
+				if (this->arr_){
+					for (size_t i = 0; i < this->size_; i++)
+						this->Alloc_.destroy(&arr_[i]);
 					this->Alloc_.deallocate(this->arr_, this->size_ + this->capacity_);
+				}
 			}
 
 			//OPERATORS
@@ -550,7 +553,7 @@ namespace ft
 			}
 
 			bool empty() const {
-				return !this->arr_ && !this->size_;
+				return !this->size_;
 			}
 
 			size_type max_size() const {
